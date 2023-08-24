@@ -4,7 +4,9 @@ import { Inter } from "next/font/google";
 import HeaderMain from "@/components/HeaderMain";
 import Navbar from "@/components/Navbar";
 import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick-theme.css"; 
+import MobNavbar from "@/components/MobNavbar";
+import Footer from "@/components/Footer";
 
 const font = Inter({ subsets: ["latin"] });
 export const metadata = {
@@ -23,7 +25,9 @@ export default function RootLayout({
         <HeaderTop />
         <HeaderMain />
         <Navbar />
+        <MobNavbar/>
         {children}
+        <Footer/>
       </body>
     </html>
   );
