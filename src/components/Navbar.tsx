@@ -33,7 +33,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="flex-grow-0  w-full h-24 shadow-lg md:flex md:items-center  bg-slate-200  md:justify-between ">
+    <nav className="w-full h-24 shadow-lg md:flex md:items-center bg-slate-200  md:justify-between">
       <div className="flex justify-between items-center h-full w-full px-4 2xl:px-6">
         {/* Div of icons */}
         <div className="relative flex justify-between items-center  cursor-pointer ">

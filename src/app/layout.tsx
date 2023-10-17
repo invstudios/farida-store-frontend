@@ -18,13 +18,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${font.className} flex flex-col `}>
+      <body className={`${font.className}`}>
         <div className="h-full  flex flex-col">
-          <div className="">
+          <div className="flex-0">
             <Navbar />
           </div>
-          <div className="flex-1 block"> {children}</div>
-          <div className="">
+          <div className="flex-1">{children}</div>
+          <div
+            className="w-full h-48 fixed bg-slate-600 bottom-0 text-white"
+            dir="rtl"
+          >
             <Footer />
           </div>
         </div>
