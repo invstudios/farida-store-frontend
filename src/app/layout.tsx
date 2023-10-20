@@ -25,7 +25,7 @@ export default function RootLayout({
           </div>
           <div className="flex-1">{children}</div>
           <div
-            className="w-full h-48 fixed bg-slate-600 bottom-0 text-white"
+            className="w-full h-48 sm:h-auto fixed bg-slate-600 bottom-0 text-white"
             dir="rtl"
           >
             <Footer />

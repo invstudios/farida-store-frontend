@@ -1,28 +1,28 @@
-import Link from 'next/link';
-import React from 'react'
-
+import Link from "next/link";
+import React from "react";
+import '../app/globals.css'
 const NavLinks = () => {
   return (
-    <div >
-      <div>
-        <ul className="hidden md:flex md:items-center">
-          <Link href="/about">
-            <li className="mx-4 uppercase hover:border-b  border-gray-600 text-xl">
+    <div className="">
+      <div className="hidden md:block">
+        <ul className="flex ml-4 items-center space-x-4">
+          <Link href="/about" className="navlink">
+            <li className="uppercase hover:border-b  border-red-600 text-xl">
               Why us
             </li>
           </Link>
-          <Link href="/contact">
-            <li className="mx-4 uppercase hover:border-b border-gray-600 text-xl">
+          <Link href="/contact" className="navlink">
+            <li className="mx-4 uppercase hover:border-b border-red-600 text-xl">
               Contact
             </li>
           </Link>
-          <Link href="/services">
-            <li className="mx-4 uppercase hover:border-b  border-gray-600 text-xl">
+          <Link href="/services" className="navlink">
+            <li className="mx-4 uppercase hover:border-b  border-red-600 text-xl">
               services
             </li>
           </Link>
-          <Link href="/ourservices">
-            <li className="mx-4 uppercase hover:border-b  border-gray-600 text-xl">
+          <Link href="/ourservices" className="navlink">
+            <li className="mx-4 uppercase hover:border-b border-red-600 text-xl">
               our-services
             </li>
           </Link>
@@ -30,6 +30,6 @@ const NavLinks = () => {
       </div>
     </div>
   );
-}
+};
 
-export default NavLinks
+export default NavLinks;
