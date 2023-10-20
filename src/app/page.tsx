@@ -1,7 +1,8 @@
-
+import cardmap from "@/components/card";
 const HomePage = () => {
   return (
     <main>
+      <cardmap />
     </main>
   );
 };

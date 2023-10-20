@@ -15,17 +15,17 @@ const Footer = () => {
               حمل تطبيق إيفال التركي الآن للطلب بكل سهولة
             </span>
           </div>
-          <div className="">
+          <div className="cursor-pointer ">
             <Image alt="me" width={150} height={150} src={appstor} />
           </div>
-          <div className="">
+          <div className="cursor-pointer">
             <Image alt="me" width={150} height={150} src={googleplaylogo} />
           </div>
         </div>
       </div>
       <div className="max-w-7xl mx-auto p-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
-          <div className="">
+          <div className="cursor-pointer">
             <Image alt="me" width={200} height={50} src={frida} />
           </div>
           <div className="flex flex-col">
@@ -37,7 +37,7 @@ const Footer = () => {
             </span>
           </div>
 
-          <div className="">
+          <div className="cursor-pointer">
             <Image src={payment} alt="" width={300} height={200} />
           </div>
         </div>
