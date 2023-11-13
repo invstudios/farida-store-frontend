@@ -1,9 +1,11 @@
-import cardmap from "@/components/card";
-const HomePage = () => {
+"use client";
+import React from "react";
+import axios from "axios";
+const page = async () => {
   return (
-    <main>
-      <cardmap />
-    </main>
+    <div>
+    </div>
   );
 };
-export default HomePage;
+
+export default page;
