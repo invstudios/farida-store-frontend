@@ -20,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${font.className}`}>
         <div className="h-full  flex flex-col">
+          {/* update */}
           <div className="flex-0">
             <Navbar />
           </div>
