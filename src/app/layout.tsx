@@ -1,7 +1,7 @@
-import Navbar from "@/components/Navbar";
+import Navbar  from '@/components/Navbar' ; 
+import Footer from '@/components/Footer';
 import "./globals.css";
 import { Urbanist } from "next/font/google";
-import Footer from "@/components/Footer";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 

@@ -1,10 +1,16 @@
-"use client";
 import React from "react";
-import axios from "axios";
-const page = async () => {
+import "./globals.css";
+import Store from "@/components/Store";
+
+
+
+const page = () => {
   return (
-    <div>
-    </div>
+    <main className="overflow-hidden">
+      <div className="mt-12 oadding-x padding-y max-width " id="discover">
+        <Store />
+      </div>
+    </main>
   );
 };
 
