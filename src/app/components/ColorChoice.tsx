@@ -7,11 +7,12 @@ import { useRouter, usePathname } from "@/navigation";
 import { StoreContext } from "@/contexts/StoreContext";
 
 interface colorProps {
+  value: string;
   name: string;
   hex: string;
 }
 
-const ColorChoice = ({ name, hex }: colorProps) => {
+const ColorChoice = ({ value, name, hex }: colorProps) => {
   const { filter } = useContext(StoreContext);
 
   const pathname = usePathname();
@@ -40,7 +41,7 @@ const ColorChoice = ({ name, hex }: colorProps) => {
     <div
       className={`flex items-center justify-between cursor-pointer `}
       onClick={() => {
-        handleColorSearch(name ?? "");
+        handleColorSearch(value ?? "");
       }}
     >
       <div className="flex items-center gap-2">
@@ -53,7 +54,7 @@ const ColorChoice = ({ name, hex }: colorProps) => {
         <h1 className="text-sm md:text-xl">{name}</h1>
       </div>
 
-      {colorFilter === name && (
+      {colorFilter === value && (
         <div className="w-2 h-2 rounded-full bg-emerald-500" />
       )}
     </div>

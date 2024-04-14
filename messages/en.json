@@ -500,5 +500,11 @@
       "success": "updated successfully",
       "failed": "failed to update"
     }
+  },
+  "activeFilters": {
+    "active": "active filters :",
+    "color": "color",
+    "minPrice": "min price",
+    "maxPrice": "max price"
   }
 }

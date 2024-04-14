@@ -14,7 +14,7 @@ const PriceSlider = () => {
   const max_price = searchParams.get("max_price");
   const [value, setValue] = React.useState<SliderValue>([
     min_price ? Number(min_price) : 0,
-    max_price ? Number(max_price) : 2000,
+    max_price ? Number(max_price) : 50000,
   ]);
   const { filter } = useContext(StoreContext);
   const t = useTranslations("filters");
@@ -50,7 +50,7 @@ const PriceSlider = () => {
         size="sm"
         color="foreground"
         step={10}
-        maxValue={2000}
+        maxValue={50000}
         minValue={0}
         value={value}
         onChange={setValue}

@@ -19,6 +19,7 @@ const ColorsMenu = () => {
       {colors.colors.map((clr) => (
         <ColorChoice
           key={clr.id}
+          value={clr.attributes.name}
           name={
             locale === "en"
               ? clr.attributes.name

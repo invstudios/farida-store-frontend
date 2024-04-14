@@ -1,26 +1,12 @@
-import FiltersSection from '@/app/components/FiltersSection'
-import ProductsSection from '@/app/components/ProductsSection'
-import PageTitle from '@/components/PageTitle'
-import React from 'react'
-import MiniAdsSection from './components/MiniAdsSection'
+import React from "react";
+import CategoriesPageContainer from "./components/CategoriesPageContainer";
 
 interface categoriesPageProps {
-params:{name:string}
+  params: { name: string };
 }
 
+const CategoriesPage = ({ params }: categoriesPageProps) => {
+  return <CategoriesPageContainer name={params.name} />;
+};
 
-const CategoriesPage = ({params}:categoriesPageProps) => {
-  return (
-     <main>
-      <PageTitle title={`${params.name.replaceAll("%20"," ")}`} />
-      <MiniAdsSection />
-    <FiltersSection />
-          
-      <ProductsSection />
-
-
-    </main>
-  )
-}
-
-export default CategoriesPage
+export default CategoriesPage;

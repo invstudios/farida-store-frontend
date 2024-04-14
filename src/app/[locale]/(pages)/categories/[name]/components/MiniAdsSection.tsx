@@ -20,12 +20,13 @@ import "swiper/css";
 // import 'swiper/css/pagination'
 // import 'swiper/css/scrollbar'
 import "swiper/css/bundle";
+import { useLocale } from "next-intl";
 
 const MiniAdsSection = () => {
   const { ads } = useContext(StoreContext);
-
+  const locale = useLocale();
   useEffect(() => {
-    ads.getAllMiniAds();
+    ads.getAllMiniAds(locale);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

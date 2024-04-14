@@ -1,9 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { CategoryType } from "./specificTypes/catgorytype";
+import { ArabicCategoryType } from "./specificTypes/arabicCategoryType";
 
 export class CategoriesStore {
   categories: CategoryType[] = [];
   someCategories: CategoryType[] = [];
+  arabicCategory: string = "";
 
   private getOptions = {
     method: "GET",
@@ -48,6 +50,27 @@ export class CategoriesStore {
         // );
         runInAction(() => {
           this.someCategories = data.data;
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  getArabicCategory = async (category: string) => {
+    await fetch(
+      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/categories?filters[$and][0][name][$eq]=${category}&populate=localizations`,
+      this.getOptions
+    )
+      .then((res) => res.json())
+      .then((data: ArabicCategoryType) => {
+        // console.log(
+        //   "this is the data of the promise we get from categories : ",
+        //   data
+        // );
+        runInAction(() => {
+          this.arabicCategory =
+            data.data[0].attributes.localizations?.data[0].attributes.name ??
+            "";
+          console.log("this is data from arabic category :", { data });
         });
       })
       .catch((err) => console.log(err));
