@@ -21,11 +21,9 @@ const ProductPageContainer = ({ id }: ProductPageContainerProps) => {
   const locale = useLocale();
 
   useEffect(() => {
-    products.getSingleProduct(id);
-
+    products.getSingleProduct(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
   return (
     <div className="relative" dir={locale === "en" ? "ltr" : "rtl"}>
       <AddToCartButton product={products.targetProduct} />

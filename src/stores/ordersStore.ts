@@ -4,6 +4,7 @@ import { userCartProductType } from "./specificTypes/userCartProductType";
 import { OrderDetail } from "./specificTypes/orderAddressType";
 import { OrderDetails, OrderItems } from "./specificTypes/orderItemsType";
 import { UserOrderDetails } from "./specificTypes/userOrderDetailsType";
+import { Console } from "console";
 
 export class OrdersStore {
   isCreatingOrderLoading: boolean = false;
@@ -51,7 +52,6 @@ export class OrdersStore {
         }),
       }
     );
-
     if (response.ok) {
       let data = await response.json();
 
@@ -232,11 +232,23 @@ export class OrdersStore {
 
     if (response.ok) {
       let data = await response.json();
-
+      console.log(data);
       if (data) {
-        if (data?.data?.attributes?.user?.data?.id === userId) {
+        if (data?.data?.attributes?.user?.data?.id == userId) {
+          console.log(
+            "test all 1 : ",
+            typeof data?.data?.attributes?.user?.data?.id,
+            typeof userId
+          );
+          console.log("test all 1 : ", data?.data?.attributes?.user, userId);
           return true;
         } else {
+          console.log(
+            "test all 2 : ",
+            typeof data?.data?.attributes?.user?.data?.id,
+            typeof userId
+          );
+          console.log("test all 2 : ", data?.data?.attributes?.user, userId);
           return false;
         }
       } else {

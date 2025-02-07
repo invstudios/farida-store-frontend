@@ -80,10 +80,6 @@ export class ProductsStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from single product : ",
-        //   data
-        // );
         runInAction(() => {
           this.targetProduct = data.data;
         });
@@ -96,24 +92,19 @@ export class ProductsStore {
 
   getTargetProductArabicData = async (productId: string) => {
     let response = await fetch(
-      `http://localhost:1337/api/products/${productId}?[populate][localizations][populate]=*`,
+      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/${productId}?populate=*`,
       this.getMethodOptions
     );
 
     let data = await response.json();
     runInAction(() => {
-      this.targetProductArabicData = data.data.attributes.localizations.data[0];
-
-      console.log(
-        "this is the target products arabic data : ",
-        data.data.attributes.localizations.data[0]
-      );
+      this.targetProductArabicData = data.data;
     });
   };
 
   getTargetProductsReviews = async (productId: string) => {
     let response = await fetch(
-      `http://localhost:1337/api/products/${productId}?populate[reviews][populate]=*`,
+      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/${productId}?populate[reviews][populate]=*`,
       this.getMethodOptions
     );
 
@@ -121,10 +112,6 @@ export class ProductsStore {
     runInAction(() => {
       this.targetProductReviews = data.data.attributes.reviews.data;
 
-      console.log(
-        "this is the target products reviews : ",
-        data.data.attributes.reviews.data
-      );
     });
   };
 
@@ -135,10 +122,6 @@ export class ProductsStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from best seller products : ",
-        //   data
-        // );
         runInAction(() => {
           this.bestSellerProducts = data.data;
           this.pagination = data.meta.pagination;
@@ -154,10 +137,6 @@ export class ProductsStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from sale products : ",
-        //   data
-        // );
         runInAction(() => {
           this.saleProducts = data.data;
           this.pagination = data.meta.pagination;
@@ -173,10 +152,6 @@ export class ProductsStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from deal products : ",
-        //   data
-        // );
         runInAction(() => {
           this.dealProducts = data.data;
           this.pagination = data.meta.pagination;

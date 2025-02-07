@@ -21,6 +21,7 @@ const AddYourReviewSection = ({ productId }: AddYourReviewSectionProps) => {
   const submitReview = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (user.userReviewDescription.length > 0 && user.userReviewRating > 0) {
+      console.log("productId : ", productId)
       user.addReviewToProduct(productId).then((ok) => {
         if (ok) {
           user.resetAllAddReviewSectionStates();

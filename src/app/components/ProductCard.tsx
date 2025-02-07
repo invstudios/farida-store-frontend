@@ -71,22 +71,22 @@ const ProductCard = ({ product }: productCardProps) => {
       setAddingToUserCartLoading(true);
       const parsedProductToCartProduct: cartProductType = {
         id: product.id,
-        imgSrc: `${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`,
+        imgSrc: `${process.env.NEXT_PUBLIC_HOST}${product.attributes?.thumbnail?.data.attributes.url}`,
         title: product.attributes.title,
         slug: product.attributes.slug,
         description: product.attributes.description,
         prePrice: getPriceAfterDiscount()
-          ? Number(product.attributes.price.toFixed(2))
+          ? Number(product.attributes?.price)
           : 0,
         price:
           getPriceAfterDiscount() ??
-          Number(product.attributes.price.toFixed(2)),
+          Number(product.attributes?.price),
         quantity: 1,
         localizatons: {
-          title: product.attributes.localizations.data[0].attributes.title,
+          title: product.attributes?.localizations?.data[0].attributes.title,
           description:
-            product.attributes.localizations.data[0].attributes.description,
-          slug: product.attributes.localizations.data[0].attributes.slug,
+            product.attributes?.localizations?.data[0].attributes.description,
+          slug: product.attributes?.localizations?.data[0].attributes.slug,
         },
       };
 
@@ -210,7 +210,7 @@ const ProductCard = ({ product }: productCardProps) => {
         >
           {/* <img
               //   as={NextImage}
-              src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`}
+              src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes?.thumbnail?.data.attributes.url}`}
               //   quality={100}
               alt="product image"
               // className="w-full   h-full    "
@@ -218,7 +218,7 @@ const ProductCard = ({ product }: productCardProps) => {
             /> */}
           <Image
             //   as={NextImage}
-            src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`}
+            src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes?.thumbnail?.data.attributes.url}`}
             radius="sm"
             //   quality={100}
             alt="product image"
@@ -234,7 +234,7 @@ const ProductCard = ({ product }: productCardProps) => {
             <h1 className="text-sm md:text-xl   line-clamp-1 ">
               {locale === "en"
                 ? product.attributes.title
-                : product.attributes.localizations.data[0].attributes
+                : product.attributes?.localizations?.data[0].attributes
                     .title}{" "}
             </h1>
             <div className="flex flex-col gap-1">
@@ -254,7 +254,7 @@ const ProductCard = ({ product }: productCardProps) => {
                   <div className="relative ">
                     <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-black/50 -rotate-3" />
                     <h2 className="text-sm md:text-xl text-mainBlack/30 font-bold  text-center">
-                      {product.attributes.price.toFixed(2)}
+                      {product.attributes?.price}
                       <span className="text-sm ltr:ml-1 rtl:mr-1">
                         {currency("currency")}
                       </span>
@@ -264,7 +264,7 @@ const ProductCard = ({ product }: productCardProps) => {
                 <h2 className="text-sm md:text-xl text-mainBlack/70 font-bold">
                   {getPriceAfterDiscount()
                     ? getPriceAfterDiscount()
-                    : product.attributes.price.toFixed(2)}
+                    : product.attributes?.price}
                   <span className="text-sm ltr:ml-1 rtl:mr-1">
                     {currency("currency")}
                   </span>

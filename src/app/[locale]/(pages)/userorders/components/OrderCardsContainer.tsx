@@ -15,7 +15,7 @@ const OrderCardsContainer = () => {
 
   return (
     <>
-      {userOrders.userOrders.length > 0 ? (
+      {userOrders?.userOrders?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-20 px-5 md:px-10 lg:px-20">
           {userOrders.userOrders.map((order) => (
             <OrderCard
@@ -24,7 +24,7 @@ const OrderCardsContainer = () => {
               orderNumber={order.id}
               orderedOn={order.createdAt}
               arrivedOn={order.arrivedAt}
-              orderItemsCount={order.order_items.length}
+              orderItemsCount={order?.order_items?.length}
             />
           ))}
         </div>

@@ -101,7 +101,7 @@ const SidebarResponsiveContent = () => {
       {selectedLabel === "sections" ? (
         <>
           <div className="py-5 flex flex-col gap-3 capitalize px-5">
-            {categories.categories.map((cat) => (
+            {categories.categories?.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/categories/${cat.attributes.name}`}
@@ -112,7 +112,7 @@ const SidebarResponsiveContent = () => {
               >
                 {locale === "en"
                   ? cat.attributes.name
-                  : cat.attributes.localizations.data[0].attributes.name}
+                  : cat.attributes?.localizations?.data[0].attributes.name}
               </Link>
             ))}
           </div>

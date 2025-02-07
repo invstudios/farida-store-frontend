@@ -25,7 +25,7 @@ const AddressesContainer = () => {
   return (
     <>
       <AddNewAddressModal />
-      {userAddresses.userAddresses.length > 0 ? (
+      {userAddresses?.userAddresses?.length > 0 ? (
         <div className="mt-10 px-5 md:px-10 lg:px-20">
           <Button
             size={currentWidth > 768 ? "md" : "sm"}
@@ -37,7 +37,7 @@ const AddressesContainer = () => {
             {t("new")}
           </Button>
           <div className="grid grid-cols-1 md:grid-cols-2 mt-5 gap-5">
-            {userAddresses.userAddresses.map((add, index) => (
+            {userAddresses?.userAddresses?.map((add, index) => (
               <UserAddress
                 key={add.id}
                 addressId={add.id}

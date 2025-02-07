@@ -4,7 +4,7 @@ import { isUserLoggedIn } from "@/functions/credentials";
 
 import { userCartProductType } from "@/stores/specificTypes/userCartProductType";
 
-import { CircularProgress, Image, Spinner, user } from "@nextui-org/react";
+import { Image } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
 import { Link } from "@/navigation";
 import React, { useContext, useEffect, useState } from "react";
@@ -25,18 +25,18 @@ const CartSidebarProduct = ({ product }: CartSidebarProductProps) => {
   const currency = useTranslations("currency");
 
   const increase = () => {
-    setCounter((c) => c + 1);
+    setCounter((c) => Number(c) + 1);
 
     if (isUserLoggedIn()) {
       setIsLoading(true);
       user
-        .updateUserCartProductQuantity(product.cartItemId, counter + 1)
+        .updateUserCartProductQuantity(product.cartItemId, Number(counter) + 1)
         .then(() => {
           setIsLoading(false);
         });
     } else {
       setIsLoading(true);
-      cart.changeQuantity(product.id, counter + 1);
+      cart.changeQuantity(product.id, Number(counter) + 1);
       setIsLoading(false);
     }
 
@@ -108,7 +108,7 @@ const CartSidebarProduct = ({ product }: CartSidebarProductProps) => {
            
             <Image
               //   as={NextImage}
-              src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`}
+              src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes?.thumbnail?.data.attributes.url}`}
               radius="sm"
               //   quality={100}
               alt="product image"

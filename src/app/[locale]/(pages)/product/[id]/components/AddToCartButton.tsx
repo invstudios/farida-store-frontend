@@ -48,25 +48,25 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       setAddingToUserCartLoading(true);
       const parsedProductToCartProduct: cartProductType = {
         id: product.id,
-        imgSrc: `${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`,
+        imgSrc: `${process.env.NEXT_PUBLIC_HOST}${product.attributes?.thumbnail?.data.attributes.url}`,
         title: product.attributes.title,
         slug: product.attributes.slug,
         description: product.attributes.description,
         prePrice: getPriceAfterDiscount()
-          ? Number(product.attributes.price.toFixed(2))
+          ? Number(product.attributes?.price)
           : 0,
         price:
           getPriceAfterDiscount() ??
-          Number(product.attributes.price.toFixed(2)),
+          Number(product.attributes?.price),
         quantity: 1,
         localizatons: {
-          title: product.attributes.localizations.data[0].attributes.title,
+          title: product.attributes?.localizations?.data[0].attributes.title,
           description:
-            product.attributes.localizations.data[0].attributes.description,
-          slug: product.attributes.localizations.data[0].attributes.slug,
+            product.attributes?.localizations?.data[0].attributes.description,
+          slug: product.attributes?.localizations?.data[0].attributes.slug,
         },
       };
-
+      console.log("parsedProductToCartProduct : ",parsedProductToCartProduct);
       cart.addProduct(parsedProductToCartProduct);
       setAddingToUserCartLoading(false);
     }

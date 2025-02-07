@@ -69,7 +69,7 @@ export class CartStore {
         });
 
         let itemsOfUserCart: userCartProductType[] = [];
-        data.cart.cart_items.map((item: CartItem) => {
+        data?.cart?.cart_items?.map((item: CartItem) => {
           // console.log(
           //   `this is porduct object of product ${item.product.id} : `,
           //   item.product
@@ -77,7 +77,7 @@ export class CartStore {
           const userCartItem: userCartProductType = {
             cartItemId: item.id,
             id: item.product.id,
-            imgSrc: `${process.env.NEXT_PUBLIC_HOST}${item.product.thumbnail.url}`,
+            imgSrc: `${process.env.NEXT_PUBLIC_HOST}${item.product?.thumbnail?.url}`,
             title: item.product.title,
             slug: item.product.slug,
             description: item.product.description,

@@ -51,7 +51,7 @@ const SidebarContent = () => {
 
       <div className="py-5 flex flex-col gap-3 capitalize px-5">
         {locale === "en"
-          ? categories.categories.map((cat) => (
+          ? categories.categories?.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/categories/${cat.attributes.name}`}
@@ -63,7 +63,7 @@ const SidebarContent = () => {
                 {cat.attributes.name}
               </Link>
             ))
-          : categories.categories.map((cat) => (
+          : categories.categories?.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/categories/${cat.attributes.name}`}
@@ -72,7 +72,7 @@ const SidebarContent = () => {
                 }`}
                 onClick={sidebar.hideWholeSidebar}
               >
-                {cat.attributes.localizations.data[0].attributes.name}
+                {cat.attributes?.localizations?.data[0].attributes.name}
               </Link>
             ))}
       </div>

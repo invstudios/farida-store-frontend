@@ -37,7 +37,7 @@ const MiniSearchProduct = ({ product }: miniSearchProductProps) => {
     >
       <div className="w-full h-auto aspect-square cursor-pointer">
         <Image
-          src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`}
+          src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes?.thumbnail?.data.attributes.url}`}
           alt=""
           className="w-full h-full object-contain"
         />
@@ -50,7 +50,7 @@ const MiniSearchProduct = ({ product }: miniSearchProductProps) => {
           <h1 className="text-xs md:text-xl font-semibold line-clamp-1">
             {locale === "en"
               ? product.attributes.title
-              : product.attributes.localizations.data[0].attributes.title}
+              : product.attributes?.localizations?.data[0].attributes.title}
           </h1>
         </div>
 
@@ -59,7 +59,7 @@ const MiniSearchProduct = ({ product }: miniSearchProductProps) => {
             <div className="relative ">
               <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-black/50 -rotate-3" />
               <h2 className="text-sm md:text-2xl text-mainBlack/30 font-bold  text-center">
-                {product.attributes.price.toFixed(2)}
+                {product.attributes?.price}
                 <span className="text-sm ml-1">EGP</span>
               </h2>
             </div>
@@ -67,7 +67,7 @@ const MiniSearchProduct = ({ product }: miniSearchProductProps) => {
           <h2 className="text-sm md:text-2xl text-mainBlack/70 font-bold">
             {getPriceAfterDiscount()
               ? getPriceAfterDiscount()
-              : product.attributes.price.toFixed(2)}
+              : product.attributes?.price}
             <span className="text-sm ml-1">EGP</span>
           </h2>
         </div>

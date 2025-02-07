@@ -36,6 +36,7 @@ const ConfirmationPageContainer = () => {
       userOrders
         .isOrderInUserOrdersList(orderId, user.strapiUserdata.id)
         .then((value) => {
+          console.log("value order in user order list : ", value)
           setFoundedInUserOrders(value ?? false);
         });
     }

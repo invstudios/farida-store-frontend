@@ -91,7 +91,7 @@ const ProductsPagination = () => {
 
   return (
     <>
-      {products.products.length > 0 && (
+      {products.products?.length > 0 && (
         <div className="flex justify-center items-center">
           <Pagination
             showControls
