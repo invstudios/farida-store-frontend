@@ -35,6 +35,8 @@ export class CartStore {
   // get all local carts products
 
   getLocalCartProducts() {
+    if (typeof window === 'undefined') return;
+
     const parseCart = JSON.parse(
       sessionStorage.getItem("cart") ?? "[]"
     ) as cartProductType[];
@@ -114,6 +116,8 @@ export class CartStore {
   // adding product to cart
 
   addProduct = (activeProduct: cartProductType) => {
+    if (typeof window === 'undefined') return;
+
     let allAddedProducts: cartProductType[] = JSON.parse(
       sessionStorage.getItem("cart") ?? "[]"
     );
@@ -135,6 +139,8 @@ export class CartStore {
   // delete product from cart
 
   deleteProduct = (productId: number) => {
+    if (typeof window === 'undefined') return;
+
     let allCartProducts: cartProductType[] = JSON.parse(
       sessionStorage.getItem("cart") ?? "[]"
     );
@@ -153,6 +159,8 @@ export class CartStore {
   // delete all products from cart
 
   deleteAllProducts = () => {
+    if (typeof window === 'undefined') return;
+
     sessionStorage.removeItem("cart");
 
     this.productsCount = 0;
@@ -163,6 +171,8 @@ export class CartStore {
   // is founded in the cart
 
   isInCart(productId: number) {
+    if (typeof window === 'undefined') return undefined;
+
     const allCartProducts: cartProductType[] = JSON.parse(
       sessionStorage.getItem("cart") ?? "[]"
     );
@@ -207,6 +217,8 @@ export class CartStore {
   // change the quantity of the cart product
 
   changeQuantity(productId: number, newQuantity: number) {
+    if (typeof window === 'undefined') return;
+
     const parsedCart: cartProductType[] = JSON.parse(
       sessionStorage.getItem("cart") ?? "[]"
     );

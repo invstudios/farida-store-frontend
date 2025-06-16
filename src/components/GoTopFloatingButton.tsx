@@ -41,7 +41,7 @@ const GoTopFloatingButton = () => {
       }}
       animate={{
         x:
-          screenScrollY > (1 / 2) * document.body.offsetHeight
+          screenScrollY > (1 / 2) * (typeof window !== 'undefined' ? document.body.offsetHeight : 1000)
             ? 0
             : isTablet || isMobile
             ? locale === "en"

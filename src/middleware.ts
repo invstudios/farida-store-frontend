@@ -54,8 +54,6 @@ export default function middleware(req: NextRequest) {
     }
   }
 
-  NextResponse.next();
-
   // middleware made by next-intl library
 
   const handleI18nRouting = createMiddleware({

@@ -1,5 +1,5 @@
 "use client";
-import { Divider } from "@nextui-org/react";
+import SafeDivider from "./SafeDivider";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { IoMdClose } from "react-icons/io";
@@ -19,7 +19,7 @@ const CartSidebarHeader = ({ close }: cartSidebarProps) => {
           onClick={close}
         />
       </div>
-      <Divider />
+      <SafeDivider />
     </div>
   );
 };

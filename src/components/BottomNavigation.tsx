@@ -26,14 +26,14 @@ const BottomNavigation = () => {
           icon={<FaRegUser className="text-lg" />}
         />
       </Link>
-      <Link href={"/wishlist"} className="justify-self-center text-5xl ">
+      <div className="justify-self-center text-5xl ">
         {/* <Icon icon={<FaRegHeart />} /> */}
         <FullWishlistIcon
           hasBorder={true}
           hasBorderHover={false}
           className="justify-self-center text-lg "
         />
-      </Link>
+      </div>
       <Link href={""} className="justify-self-center  ">
         <FullSearchIcon
           hasBorder={true}

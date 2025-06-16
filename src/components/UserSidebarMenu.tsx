@@ -1,6 +1,7 @@
 "use client";
-import { isUserLoggedIn } from "@/functions/credentials";
-import { Button, Chip, Divider, User } from "@nextui-org/react";
+import { useAuth } from "@/hooks/useAuth";
+import { Button, Chip, User } from "@nextui-org/react";
+import SafeDivider from "./SafeDivider";
 import React, { useContext } from "react";
 import { FaArrowRight, FaRegUserCircle } from "react-icons/fa";
 import UserLoggedInUi from "./UserLoggedInUi";
@@ -32,7 +33,7 @@ const UserSidebarMenu = () => {
 
   return (
     <div className="md:text-mainBlack/50">
-      <Divider />
+      <SafeDivider />
 
       <div className="py-5 px-5 flex flex-col gap-3 text-lg">
         <Link href={"/user"} className="md:hidden">
@@ -83,7 +84,7 @@ const UserSidebarMenu = () => {
           className="flex flex-col  gap-2  cursor-pointer select-none"
           onClick={logout}
         >
-          <Divider />
+          <SafeDivider />
           <div className="flex gap-2 items-center text-red-500">
             <IoIosLogOut />
             <h1> {t("logout")}</h1>

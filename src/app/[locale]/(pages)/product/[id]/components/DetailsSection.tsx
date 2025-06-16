@@ -42,7 +42,7 @@ const DetailsSection = ({
               ? locale === "en"
                 ? product?.attributes?.title
                 : product?.attributes?.localizations?.data[0]?.attributes?.title
-              : "kdsjdskjdskjdskd"}
+              : ""}
           </h1>
         </Skeleton>
 
@@ -75,18 +75,18 @@ const DetailsSection = ({
                 ? product?.attributes?.description
                 : product?.attributes?.localizations?.data[0]?.attributes
                     ?.description
-              : "ldskdsldslksdk"}
+              : ""}
           </h1>
         </Skeleton>
       </div>
 
       <h1 className="text-sm md:text-xl font-semibold capitalize">
         {t("details.status")} :{" "}
-        {product?.attributes?.product_inventory?.data?.attributes
-          ?.available_in_stock &&
-        product?.attributes?.product_inventory?.data?.attributes
-          ?.available_in_stock > 0 ? (
-          <span className="text-green-700">{t("details.inStock")}</span>
+        {product?.attributes?.product_inventory?.data?.attributes?.available_in_stock != null &&
+        product?.attributes?.product_inventory?.data?.attributes?.available_in_stock > 0 ? (
+          <span className="text-green-700">
+            {t("details.inStock")} ({product?.attributes?.product_inventory?.data?.attributes?.available_in_stock} {locale === "ar" ? "قطعة متوفرة" : "items available"})
+          </span>
         ) : (
           <span className="text-red-700">{t("details.outStock")}</span>
         )}

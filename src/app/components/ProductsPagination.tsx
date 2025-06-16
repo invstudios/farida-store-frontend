@@ -91,13 +91,13 @@ const ProductsPagination = () => {
 
   return (
     <>
-      {products.products?.length > 0 && (
+      {products.products && products.products.length > 0 && (
         <div className="flex justify-center items-center">
           <Pagination
             showControls
             color="danger"
             size={isMobile ? "sm" : isDesktop ? "md" : "lg"}
-            total={products.pagination.pageCount}
+            total={products.pagination?.pageCount || 1}
             initialPage={1}
             variant={"faded"}
             onChange={(page) => {

@@ -24,6 +24,20 @@ const ProductPageContainer = ({ id }: ProductPageContainerProps) => {
     products.getSingleProduct(id)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  // Show loading state if product is not loaded yet
+  if (!products.targetProduct) {
+    return (
+      <div className="relative" dir={locale === "en" ? "ltr" : "rtl"}>
+        <div className="relative px-5 medmob:px-10 lmob:px-20 sm:px-32 md:px-20 lg:px-10 pb-5 mt-5">
+          <div className="flex justify-center items-center h-64">
+            <div className="text-lg">Loading product...</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative" dir={locale === "en" ? "ltr" : "rtl"}>
       <AddToCartButton product={products.targetProduct} />
@@ -32,11 +46,11 @@ const ProductPageContainer = ({ id }: ProductPageContainerProps) => {
         <Breads
           title={
             locale === "en"
-              ? products.targetProduct?.attributes?.title.slice(0, 40) + "..."
-              : products.targetProduct?.attributes?.localizations?.data[0]?.attributes?.title.slice(
+              ? (products.targetProduct?.attributes?.title?.slice(0, 40) || "Product") + "..."
+              : (products.targetProduct?.attributes?.localizations?.data?.[0]?.attributes?.title?.slice(
                   0,
                   40
-                ) + "..."
+                ) || "Product") + "..."
           }
         />
         <div className="grid grid-cols-1 grid-rows-[auto_auto_auto] md:grid-cols-[3fr_6fr] lg:grid-cols-[2fr_6fr] xl:grid-cols-[1.5fr_6fr] md:grid-rows-1 pt-10 gap-10">
@@ -44,11 +58,7 @@ const ProductPageContainer = ({ id }: ProductPageContainerProps) => {
           <div className="flex flex-col gap-20">
             <div className="grid grid-cols-1 grid-rows-[auto_auto] lg:grid-cols-2 lg:grid-rows-1 gap-10">
               <ImagesSection
-                allImages={
-                  locale === "en"
-                    ? products.targetProduct?.attributes?.images
-                    : products.targetProductArabicData?.attributes?.images
-                }
+                allImages={products.targetProduct?.attributes?.images}
               />
               <DetailsSection
                 product={products.targetProduct}

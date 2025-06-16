@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { LiaNewspaper } from "react-icons/lia";
 import { FaRegEye } from "react-icons/fa";
-import { Divider } from "@nextui-org/react";
+import SafeDivider from "./SafeDivider";
 import { StoreContext } from "@/contexts/StoreContext";
 import { Link } from "@/navigation";
 import { observer } from "mobx-react-lite";
@@ -10,11 +10,12 @@ import { useParams } from "next/navigation";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { IoMdClose } from "react-icons/io";
 import UserSidebarMenu from "./UserSidebarMenu";
-import { isUserLoggedIn } from "@/functions/credentials";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocale, useTranslations } from "next-intl";
 
 const SidebarContent = () => {
   const { sidebar, categories } = useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
 
   const urlParams: Params = useParams();
 
@@ -35,7 +36,7 @@ const SidebarContent = () => {
   }, [urlParams]);
 
   return (
-    <div className="relative hidden md:flex flex-col ">
+    <div className="relative hidden md:flex flex-col " suppressHydrationWarning={true}>
       <div className="sticky top-0 flex  flex-col bg-mainWhite">
         <div className=" flex justify-between items-center px-5 py-3">
           <h1 className="text-3xl text-mainPink uppercase font-bold">logo</h1>
@@ -46,7 +47,7 @@ const SidebarContent = () => {
             <IoMdClose className=" cursor-pointer" />
           </div>
         </div>
-        <Divider />
+        <SafeDivider />
       </div>
 
       <div className="py-5 flex flex-col gap-3 capitalize px-5">
@@ -76,8 +77,8 @@ const SidebarContent = () => {
               </Link>
             ))}
       </div>
-      <div className="flex flex-col ">
-        <Divider />
+      <div className="flex flex-col " suppressHydrationWarning={true}>
+        <SafeDivider />
         <div className="flex py-3 flex-col px-5 gap-2 capitalize">
           <div className="flex items-center text-lg gap-2 text-mainBlack/50">
             <LiaNewspaper />
@@ -88,9 +89,9 @@ const SidebarContent = () => {
             <Link href={"#"}>{t("seen")}</Link>
           </div>
         </div>
-        {isUserLoggedIn() && (
+        {isLoggedIn && (
           <>
-            <Divider />
+            <SafeDivider />
             <UserSidebarMenu />
           </>
         )}

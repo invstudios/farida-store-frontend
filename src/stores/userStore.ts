@@ -130,6 +130,8 @@ export class userStore {
   };
 
   mergeLocalCartWithUserCart = async (userCartItems: userCartProductType[]) => {
+    if (typeof window === 'undefined') return false;
+
     const localCartItems: cartProductType[] = JSON.parse(
       sessionStorage.getItem("cart") ?? "[]"
     );
@@ -150,6 +152,8 @@ export class userStore {
   };
 
   clearLocalCart = async () => {
+    if (typeof window === 'undefined') return false;
+
     sessionStorage.removeItem("cart");
 
     return true;

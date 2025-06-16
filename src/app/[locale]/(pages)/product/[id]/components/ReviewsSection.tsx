@@ -9,7 +9,7 @@ import { strapiProductType } from "@/stores/specificTypes/strapiProductType";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "@/contexts/StoreContext";
 import AddYourReviewSection from "./AddYourReviewSection";
-import { isUserLoggedIn } from "@/functions/credentials";
+import { useAuth } from "@/hooks/useAuth";
 import ReviewSendedSuccesfuly from "./ReviewSendedSuccesfuly";
 import { getTheLengthOfAllowedRatings } from "@/functions/getTheLengthOfAllowedRatings";
 import { useScreenSize } from "react-screen-size-helper";
@@ -22,6 +22,7 @@ interface reviewProps {
 
 const ReviewsSection = ({ product }: reviewProps) => {
   const { products, loginForm, registerForm, user } = useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
 
   const { currentWidth } = useScreenSize({});
 
@@ -31,12 +32,9 @@ const ReviewsSection = ({ product }: reviewProps) => {
   const locale = useLocale();
 
   useEffect(() => {
-    if (isUserLoggedIn()) {
-      setUserLoggedin(true);
-    } else {
-      setUserLoggedin(false);
-    }
-  }, [loginForm.isLoading, registerForm.isLoading, user.isLoading]);
+    setUserLoggedin(isLoggedIn);
+  }, [isLoggedIn, loginForm.isLoading, registerForm.isLoading, user.isLoading]);
+
   return (
     <div className="flex flex-col">
       <div className="flex w-full flex-col ">

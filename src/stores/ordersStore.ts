@@ -110,7 +110,7 @@ export class OrdersStore {
       phone: string;
       second_phone: string;
     };
-    // orderItemsIds: string[];
+    orderItemsIds: string[];
   }) => {
     let response = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/order-details`,
@@ -133,7 +133,7 @@ export class OrdersStore {
             postal_code: newOrderData.orderAddress.postal_code,
             phone: newOrderData.orderAddress.phone,
             second_phone: newOrderData.orderAddress.second_phone,
-            //   order_items: newOrderData.orderItemsIds,
+            order_items: newOrderData.orderItemsIds,
           },
         }),
       }
@@ -259,7 +259,7 @@ export class OrdersStore {
 
   getUserOrders = async () => {
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/me?[populate][order_details][populate]=*`,
+      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/me?[populate][order_details][populate][order_items][populate]=*&[populate][order_details][populate][user_order_address]=*`,
       {
         method: "GET",
         headers: {
