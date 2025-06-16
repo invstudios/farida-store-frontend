@@ -36,11 +36,11 @@ export class userWishListStore {
 
         let itemsOfUserWishlist: userWishlistProductType[] = [];
 
-        data.wishlist.wishlist_items.map((item: WishlistItem) => {
+        data?.wishlist?.wishlist_items?.map((item: WishlistItem) => {
           const userWishListItem: userWishlistProductType = {
             wishlistItemId: item.id,
             id: item.product.id,
-            imgSrc: `${process.env.NEXT_PUBLIC_HOST}${item.product.thumbnail.url}`,
+            imgSrc: `${process.env.NEXT_PUBLIC_HOST}${item.product?.thumbnail?.url}`,
             title: item.product.title,
             slug: item.product.slug,
             description: item.product.description,
@@ -150,6 +150,7 @@ export class userWishListStore {
   }
 
   addProductToUserWishlist = async (productId: string | number) => {
+    console.log("productId : ", productId)
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/wishlist-items`,
       {
@@ -162,7 +163,7 @@ export class userWishListStore {
           data: {
             product: productId.toString(),
 
-            wishlist: this.userWishlist.id,
+            wishlist: this?.userWishlist?.id,
           },
         }),
       }

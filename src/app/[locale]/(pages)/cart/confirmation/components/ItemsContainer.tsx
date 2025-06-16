@@ -39,7 +39,7 @@ const ItemsContainer = () => {
         //   key={orderItem.id}
         //   title={orderItem.attributes.product.data.attributes.title}
         //   description={orderItem.attributes.product.data.attributes.description}
-        //   imgSrc={`${process.env.NEXT_PUBLIC_HOST}${orderItem.attributes.product.data.attributes.thumbnail.data.attributes.url}`}
+        //   imgSrc={`${process.env.NEXT_PUBLIC_HOST}${orderItem.attributes.product.data.attributes?.thumbnail?.data.attributes.url}`}
         //   price={orderItem.attributes.product.data.attributes.price}
         //   quantity={orderItem.attributes.quantity}
         // />

@@ -26,18 +26,18 @@ const CartDropProduct = ({ product }: cartDropProductProps) => {
   const { cart, user } = useContext(StoreContext);
 
   const increase = () => {
-    setCounter((c) => c + 1);
+    setCounter((c) => Number(c) + 1);
 
     if (isUserLoggedIn()) {
       setIsLoading(true);
       user
-        .updateUserCartProductQuantity(product.cartItemId, counter + 1)
+        .updateUserCartProductQuantity(product.cartItemId, Number(counter) + 1)
         .then(() => {
           setIsLoading(false);
         });
     } else {
       setIsLoading(true);
-      cart.changeQuantity(product.id, counter + 1);
+      cart.changeQuantity(product.id, Number(counter) + 1);
       setIsLoading(false);
     }
 

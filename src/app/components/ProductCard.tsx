@@ -242,6 +242,7 @@ const ProductCard = ({ product }: productCardProps) => {
               {locale === "en"
                 ? product.attributes.title
                 : product.attributes.localizations?.data?.[0]?.attributes?.title || product.attributes.title}{" "}
+
             </h1>
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">

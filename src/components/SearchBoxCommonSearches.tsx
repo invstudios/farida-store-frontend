@@ -21,7 +21,7 @@ const SearchBoxCommonSearches = ({ searchForResult }: commonSearchProps) => {
     >
       <h1 className="text-sm md:text-xl capitalize">{t("common")}</h1>
 
-      {categories.someCategories.map((cat) => (
+      {categories.someCategories?.map((cat) => (
         <div
           key={cat.id}
           onClick={() => {

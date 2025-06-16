@@ -34,7 +34,7 @@ export class userStore {
     )
       .then((res) => res.json())
       .then((data): void => {
-        // console.log("this is user data : ", data);
+        console.log("this is user data : ", data);
 
         runInAction(() => {
           this.strapiUserdata = data;
@@ -61,6 +61,11 @@ export class userStore {
     productId: string | number,
     quantity: number
   ) => {
+    console.log({
+      product: productId.toString(),
+      quantity: quantity,
+      cart: this.strapiUserdata.cart.id,
+    })
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/cart-items`,
       {
@@ -73,12 +78,17 @@ export class userStore {
           data: {
             product: productId.toString(),
             quantity: quantity,
-            cart: this.strapiUserdata?.cart?.id.toString(),
+            cart: String(this.strapiUserdata?.cart?.id),
           },
         }),
       }
     );
-
+    console.log({
+      product: productId.toString(),
+      quantity: quantity,
+      cart: this.strapiUserdata.cart.id,
+    })
+    console.log("status post data : ", response.ok)
     return response.ok;
   };
 
@@ -172,7 +182,7 @@ export class userStore {
           data: {
             description: this.userReviewDescription,
             rating: this.userReviewRating,
-            product: productId.toString(),
+            product: productId,
             user: this.strapiUserdata.id,
           },
         }),
@@ -199,6 +209,12 @@ export class userStore {
     firstName: string;
     lastName: string;
   }) => {
+    console.log({
+      username: newUserData.username,
+      email: newUserData.email,
+      first_name: newUserData.firstName,
+      last_name: newUserData.lastName,
+    })
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/${this.strapiUserdata.id}`,
       {

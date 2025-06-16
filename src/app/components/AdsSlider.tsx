@@ -57,7 +57,7 @@ const AdsSlider = () => {
         centeredSlides={true}
         className="w-full md:w-10/12 aspect-video bg-white cursor-grab"
       >
-        {ads.ads.map((ad) => (
+        {ads.ads?.map((ad) => (
           <SwiperSlide key={ad.id} className="w-full h-full ">
             <img
               src={`${process.env.NEXT_PUBLIC_HOST}${ad.attributes.thumb.data.attributes.url}`}

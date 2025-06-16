@@ -16,7 +16,7 @@ const ColorsMenu = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      {colors.colors.map((clr) => (
+      {colors.colors?.map((clr) => (
         <ColorChoice
           key={clr.id}
           value={clr.attributes.name}

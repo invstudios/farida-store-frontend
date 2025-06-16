@@ -17,7 +17,7 @@ const OrderCardsContainer = () => {
   console.log("userOrders.userOrders : ", Array(userOrders.userOrders))
   return (
     <>
-      {userOrders.userOrders.length > 0 ? (
+      {userOrders?.userOrders?.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-20 px-5 md:px-10 lg:px-20">
           {userOrders.userOrders.map((order) => (
             <OrderCard

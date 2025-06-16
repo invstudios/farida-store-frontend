@@ -11,12 +11,12 @@ const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
 
 const firebaseConfig = {
   apiKey: apiKey,
-  authDomain: "farida-testing.firebaseapp.com",
-  projectId: "farida-testing",
-  storageBucket: "farida-testing.appspot.com",
-  messagingSenderId: "84301089480",
-  appId: "1:84301089480:web:93cf0b8b4546e01c6e73fd",
-  measurementId: "G-HGKN7ZB27H",
+  authDomain: "quiz-2273d.firebaseapp.com",
+  projectId: "quiz-2273d",
+  storageBucket: "quiz-2273d.firebasestorage.app",
+  messagingSenderId: "933693124598",
+  appId: "1:933693124598:web:c4535d6bab4486d026a1d7",
+  measurementId: "G-NNE70ZYM2C"
 };
 
 // Initialize Firebase

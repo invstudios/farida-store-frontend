@@ -85,7 +85,7 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
           slug: product.attributes.localizations?.data?.[0]?.attributes?.slug || product.attributes.slug || '',
         },
       };
-
+      console.log("parsedProductToCartProduct : ",parsedProductToCartProduct);
       cart.addProduct(parsedProductToCartProduct);
       setAddingToUserCartLoading(false);
     }

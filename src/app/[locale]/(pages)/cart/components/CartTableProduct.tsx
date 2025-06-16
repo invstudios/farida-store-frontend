@@ -58,7 +58,7 @@ const CartTableProduct = ({ product }: cartTableProductProps) => {
           </h1>
           <QuantityCounter settingLoading={setIsloading} product={product} />
           <h1 className="text-center text-sm md:text-xl hidden smob:block md:hidden">
-            {(product.price * product.quantity).toFixed(2)}{" "}
+            {(Number(product.price) * Number(product.quantity)).toFixed(2)}{" "}
           </h1>
 
           <div className=" smob:hidden flex flex-col gap-2">
@@ -66,7 +66,7 @@ const CartTableProduct = ({ product }: cartTableProductProps) => {
               {product.price}
             </h1>
             <h1 className="text-center text-sm md:text-xl  ">
-              {(product.price * product.quantity).toFixed(2)}{" "}
+              {(Number(product.price) * Number(product.quantity)).toFixed(2)}{" "}
             </h1>
           </div>
         </div>

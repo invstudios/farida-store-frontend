@@ -25,7 +25,7 @@ const FilterSidebarLinks = () => {
 
   return (
     <div className="flex flex-col gap-3">
-      {categories.categories.map((cat) => (
+      {categories.categories?.map((cat) => (
         <Link
           key={cat.id}
           href={`/categories/${cat.attributes.name}`}
@@ -36,7 +36,7 @@ const FilterSidebarLinks = () => {
           <h1>
             {locale === "en"
               ? cat.attributes.name
-              : cat.attributes.localizations.data[0].attributes.name}
+              : cat.attributes?.localizations?.data[0].attributes.name}
           </h1>
           <h1>({cat.attributes.products.data.length})</h1>
         </Link>

@@ -78,10 +78,6 @@ export class ProductsStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from single product : ",
-        //   data
-        // );
         runInAction(() => {
           this.targetProduct = data.data;
         });
@@ -169,10 +165,6 @@ export class ProductsStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from best seller products : ",
-        //   data
-        // );
         runInAction(() => {
           this.bestSellerProducts = data.data || [];
           this.pagination = data.meta?.pagination || this.pagination;
@@ -188,10 +180,6 @@ export class ProductsStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from sale products : ",
-        //   data
-        // );
         runInAction(() => {
           this.saleProducts = data.data || [];
           this.pagination = data.meta?.pagination || this.pagination;
@@ -207,10 +195,6 @@ export class ProductsStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from deal products : ",
-        //   data
-        // );
         runInAction(() => {
           this.dealProducts = data.data || [];
           this.pagination = data.meta?.pagination || this.pagination;
