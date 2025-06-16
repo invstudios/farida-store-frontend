@@ -11,12 +11,12 @@ import Footer from "@/components/Footer";
 import Sidebar from "@/components/Sidebar";
 import CartFloatingButton from "@/components/CartFloatingButton";
 import CartSideBar from "@/components/CartSideBar";
-import Uiproviders from "@/providers/UiProviders";
 import TopPositionedAds from "@/components/TopPositionedAds";
 import BottomNavigation from "@/components/BottomNavigation";
 import GoTopFloatingButton from "@/components/GoTopFloatingButton";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import { unstable_setRequestLocale } from "next-intl/server";
+import Uiproviders from "@/providers/Uiproviders";
 
 export const metadata = {
   title: "Farida Store",
@@ -50,7 +50,7 @@ export default function RootLayout({
       // className="text-[10px] sm:text-[12px] md:text-[14px] lg:text-[16px]"
       // style={{ direction: locale === "en" ? "ltr" : "rtl" }}
     >
-      <body className={`font-cairo flex flex-col `}>
+      <body className={`font-cairo flex flex-col `} suppressHydrationWarning={true}>
         <Uiproviders>
           <StoreContextProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>

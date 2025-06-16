@@ -5,18 +5,21 @@ import { Divider } from "@nextui-org/react";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
 import Cookies from "js-cookie";
-import { isUserLoggedIn } from "@/functions/credentials";
+import { useAuth } from "@/hooks/useAuth";
 
 const CartSidebarProductsMenu = () => {
   const { cart, user, loginForm, registerForm, cartSidebar } =
     useContext(StoreContext);
-  const [uiCondition, setUiCondition] = useState(isUserLoggedIn());
+  const { isLoggedIn, isLoading } = useAuth();
+  const [uiCondition, setUiCondition] = useState(false);
 
   useEffect(() => {
-    setUiCondition(isUserLoggedIn());
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!isLoading) {
+      setUiCondition(isLoggedIn);
+    }
   }, [
+    isLoggedIn,
+    isLoading,
     user.isLoading,
     loginForm.isLoading,
     registerForm.isLoading,

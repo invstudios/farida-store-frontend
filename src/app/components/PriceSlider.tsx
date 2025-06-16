@@ -19,7 +19,7 @@ const PriceSlider = () => {
   const { filter } = useContext(StoreContext);
   const t = useTranslations("filters");
 
-  const params = new URLSearchParams(searchParams);
+  const params = new URLSearchParams(searchParams.toString());
 
   // const salesOnly = searchParams.get("salesonly")
 
@@ -37,7 +37,7 @@ const PriceSlider = () => {
   const filterByPriceRange = () => {
     if (typeof value === "object") {
       // router.push(`${pathname}?min_price=${value[0] }&max_price=${value[1]}`)
-      handlePriceSearch(`${value[0]}`.toString() ?? "", `${value[1]}` ?? "");
+      handlePriceSearch(value[0].toString(), value[1].toString());
     }
     filter.hideWholeFilterSidebar();
   };
@@ -46,7 +46,6 @@ const PriceSlider = () => {
     <div className="flex flex-col gap-2 w-full h-full max-w-md items-start justify-center">
       <Slider
         label={t("selectPrice")}
-        formatOptions={{ style: "currency", currency: "EGP" }}
         size="sm"
         color="foreground"
         step={10}
@@ -57,9 +56,9 @@ const PriceSlider = () => {
         className="max-w-md"
       />
       <div className="flex items-center w-full justify-between">
-        <p className="text-default-500 font-medium text-small">
+        <p className="text-default-500 font-medium text-small" suppressHydrationWarning>
           {t("price")}:{" "}
-          {Array.isArray(value) && value.map((b) => `EGP${b}`).join(" – ")}
+          {Array.isArray(value) && value.map((b) => `EGP ${b}`).join("–")}
         </p>
         <Button
           radius="sm"
@@ -74,3 +73,4 @@ const PriceSlider = () => {
 };
 
 export default PriceSlider;
+

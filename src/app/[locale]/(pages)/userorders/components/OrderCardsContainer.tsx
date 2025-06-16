@@ -6,13 +6,15 @@ import { StoreContext } from "@/contexts/StoreContext";
 import EmptyOrders from "./EmptyOrders";
 
 const OrderCardsContainer = () => {
-  const { user, userOrders } = useContext(StoreContext);
+  const { userOrders } = useContext(StoreContext);
 
   useEffect(() => {
     userOrders.getUserOrders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
+  console.log("userOrders.userOrders : ", Array(userOrders.userOrders))
   return (
     <>
       {userOrders.userOrders.length > 0 ? (
@@ -24,7 +26,7 @@ const OrderCardsContainer = () => {
               orderNumber={order.id}
               orderedOn={order.createdAt}
               arrivedOn={order.arrivedAt}
-              orderItemsCount={order.order_items.length}
+              orderItemsCount={order?.order_items?.length || 0}
             />
           ))}
         </div>

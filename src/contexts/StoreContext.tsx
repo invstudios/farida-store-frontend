@@ -1,7 +1,4 @@
 "use client"
 
-import { createContext } from "react";
-import { store } from "@/stores";
-
-
-export const StoreContext = createContext(store)
+// Re-export StoreContext from stores to maintain compatibility
+export { StoreContext } from "@/stores";

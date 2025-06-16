@@ -8,30 +8,25 @@ import UserLoggedInUi from "./UserLoggedInUi";
 
 import { Button } from "@nextui-org/react";
 import { useRouter } from "@/navigation";
-import { isUserLoggedIn } from "@/functions/credentials";
+import { useAuth } from "@/hooks/useAuth";
 import { useLocale, useTranslations } from "next-intl";
 import GoogleProvider from "@/app/[locale]/(auth)/GoogleProvider";
 
 const UserDrop = () => {
   const { userDrop, user, loginForm, registerForm } = useContext(StoreContext);
-  const [uiCondition, setUiCondition] = useState(!isUserLoggedIn());
+  const { isLoggedIn, isLoading } = useAuth();
+  const [uiCondition, setUiCondition] = useState(true); // Default to show login form
 
   const locale = useLocale();
   const t = useTranslations("loginForm");
 
-  // onAuthStateChanged(auth, (currentUser) => {
-  //   user.setUserData(currentUser);
-  // });
-
-  // const uiCondition = ! user?.userData?.uid?.length ?? 0 > 0
-
   const router = useRouter();
 
   useEffect(() => {
-    setUiCondition(!isUserLoggedIn());
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.isLoading, loginForm.isLoading, registerForm.isLoading]);
+    if (!isLoading) {
+      setUiCondition(!isLoggedIn);
+    }
+  }, [isLoggedIn, isLoading, user.isLoading, loginForm.isLoading, registerForm.isLoading]);
 
   return (
     <motion.div
@@ -60,7 +55,7 @@ const UserDrop = () => {
             onSubmit={(e) => {
               e.preventDefault();
               loginForm.strapiLogin();
-              if (isUserLoggedIn()) {
+              if (isLoggedIn) {
                 router.refresh();
               }
             }}

@@ -7,10 +7,15 @@ export class WishListStore {
 
   constructor() {
     makeAutoObservable(this);
-    this.getAllWishlistProducts();
+    // Only initialize from localStorage on client side
+    if (typeof window !== 'undefined') {
+      this.getAllWishlistProducts();
+    }
   }
 
   addToWishlist(addedProduct: userWishlistProductType) {
+    if (typeof window === 'undefined') return;
+
     const allWishlistProducts: userWishlistProductType[] = JSON.parse(
       localStorage.getItem("wishlist") ?? "[]"
     );
@@ -26,6 +31,8 @@ export class WishListStore {
   }
 
   removeFromWishlist(productId: number) {
+    if (typeof window === 'undefined') return;
+
     const allWishlistProducts: userWishlistProductType[] = JSON.parse(
       localStorage.getItem("wishlist") ?? "[]"
     );
@@ -38,12 +45,16 @@ export class WishListStore {
   }
 
   removeAllFromWishlist() {
+    if (typeof window === 'undefined') return;
+
     localStorage.setItem("wishlist", "[]");
     this.items = [];
     this.itemsCount = 0;
   }
 
   isInWishlist(productId: number) {
+    if (typeof window === 'undefined') return undefined;
+
     const allWishlistProducts: userWishlistProductType[] = JSON.parse(
       localStorage.getItem("wishlist") ?? "[]"
     );
@@ -58,6 +69,8 @@ export class WishListStore {
   // reused functions
 
   getAllWishlistProducts() {
+    if (typeof window === 'undefined') return;
+
     const allWishlistProducts: userWishlistProductType[] = JSON.parse(
       localStorage.getItem("wishlist") ?? "[]"
     );
@@ -66,6 +79,8 @@ export class WishListStore {
   }
 
   setWishlist(newValue: userWishlistProductType[]) {
+    if (typeof window === 'undefined') return;
+
     localStorage.setItem("wishlist", JSON.stringify(newValue));
     this.items = newValue;
     this.itemsCount = newValue.length;

@@ -1,9 +1,8 @@
 "use client";
-import { StoreContext } from "@/contexts/StoreContext";
 import { CartStore } from "./cartStore";
 import { UserDropStore } from "./userDropStore";
 
-import React from "react";
+import React, { createContext } from "react";
 import { userStore } from "./userStore";
 import { SideBarStore } from "./sidebarStore";
 import { ProductsStore } from "./productsStore";
@@ -145,6 +144,9 @@ export const store = {
   fastAds: fastAdsInstance,
   filtersDrop: filtersDropMenuInstance,
 };
+
+// Create the StoreContext here to avoid circular dependency
+export const StoreContext = createContext(store);
 
 interface indexChildren {
   children: React.JSX.Element;

@@ -2,7 +2,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { LiaNewspaper } from "react-icons/lia";
 import { FaBackward, FaRegEye } from "react-icons/fa";
-import { Button, Divider } from "@nextui-org/react";
+import { Button } from "@nextui-org/react";
+import SafeDivider from "./SafeDivider";
 import { StoreContext } from "@/contexts/StoreContext";
 import { Link } from "@/navigation";
 import { observer } from "mobx-react-lite";
@@ -96,7 +97,7 @@ const SidebarResponsiveContent = () => {
         </div>
       </div>
 
-      <Divider />
+      <SafeDivider />
 
       {selectedLabel === "sections" ? (
         <>
@@ -117,7 +118,7 @@ const SidebarResponsiveContent = () => {
             ))}
           </div>
           <div className="flex flex-col ">
-            <Divider />
+            <SafeDivider />
             <div className="flex py-3 flex-col px-5 gap-2 capitalize">
               <div className="flex items-center text-lg gap-2 text-mainBlack/50">
                 <LiaNewspaper />

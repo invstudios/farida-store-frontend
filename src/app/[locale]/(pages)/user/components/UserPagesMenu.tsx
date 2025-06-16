@@ -9,10 +9,11 @@ import { RiUserSettingsLine } from "react-icons/ri";
 import { StoreContext } from "@/contexts/StoreContext";
 import { useRouter } from "@/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { isUserLoggedIn } from "@/functions/credentials";
+import { useAuth } from "@/hooks/useAuth";
 
 const UserPagesMenu = () => {
   const { user } = useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
   const t = useTranslations("userPage");
   const locale = useLocale();
 
@@ -65,12 +66,12 @@ const UserPagesMenu = () => {
   ];
 
   useEffect(() => {
-    if (!isUserLoggedIn()) {
+    if (!isLoggedIn) {
       router.push("/login");
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user.isLoading]);
+  }, [isLoggedIn, user.isLoading]);
 
   return (
     <div

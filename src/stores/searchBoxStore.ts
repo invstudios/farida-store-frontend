@@ -25,10 +25,14 @@ export class SearchBoxStore {
   set displayBackdrop(state: boolean) {
     if (state) {
       this.showBackdrop = state;
-      document.body.style.overflow = "hidden";
+      if (typeof window !== 'undefined') {
+        document.body.style.overflow = "hidden";
+      }
     } else {
       this.showBackdrop = state;
-      document.body.style.overflow = "unset";
+      if (typeof window !== 'undefined') {
+        document.body.style.overflow = "unset";
+      }
     }
   }
 

@@ -1,16 +1,17 @@
 "use client";
 import { StoreContext } from "@/contexts/StoreContext";
-import { isUserLoggedIn } from "@/functions/credentials";
+import { useAuth } from "@/hooks/useAuth";
 
 import { cartProductType } from "@/stores/specificTypes/cartProductType";
 import { strapiProductType } from "@/stores/specificTypes/strapiProductType";
 
 import { Button, Spinner } from "@nextui-org/react";
 import { observer } from "mobx-react-lite";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 
 import { FaCheck } from "react-icons/fa";
 import { FaCartPlus } from "react-icons/fa6";
+import { MdOutlineRemoveShoppingCart } from "react-icons/md";
 
 import { useScreenSize } from "react-screen-size-helper";
 import { motion } from "framer-motion";
@@ -23,6 +24,7 @@ interface AddToCartButtonProps {
 const AddToCartButton = ({ product }: AddToCartButtonProps) => {
   const { cart, user, products, cartSidebar, sidebar, searchBox } =
     useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
   const { currentWidth } = useScreenSize({});
   const t = useTranslations("productPage");
 
@@ -30,7 +32,19 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
   const [addingToUserCartLoading, setAddingToUserCartLoading] = useState(false);
 
   const addProductToCart = () => {
-    if (isUserLoggedIn()) {
+    // Check if product data is valid
+    if (!product || !product.attributes) {
+      console.error("Product data is missing or invalid");
+      return;
+    }
+
+    // Check if product is available in stock
+    if (!isProductAvailable()) {
+      console.log("Product is not available in stock");
+      return;
+    }
+
+    if (isLoggedIn) {
       if (!foundInCart) {
         setAddingToUserCartLoading(true);
         user
@@ -46,24 +60,29 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       }
     } else {
       setAddingToUserCartLoading(true);
+
+      // Safe access to thumbnail
+      const thumbnailUrl = product.attributes.thumbnail?.data?.attributes?.url || '';
+      const imgSrc = thumbnailUrl ? `${process.env.NEXT_PUBLIC_HOST}${thumbnailUrl}` : '';
+
       const parsedProductToCartProduct: cartProductType = {
         id: product.id,
-        imgSrc: `${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`,
-        title: product.attributes.title,
-        slug: product.attributes.slug,
-        description: product.attributes.description,
+        imgSrc: imgSrc,
+        title: product.attributes.title || 'Unknown Product',
+        slug: product.attributes.slug || '',
+        description: product.attributes.description || '',
         prePrice: getPriceAfterDiscount()
-          ? Number(product.attributes.price.toFixed(2))
+          ? Number(getSafePrice().toFixed(2))
           : 0,
         price:
           getPriceAfterDiscount() ??
-          Number(product.attributes.price.toFixed(2)),
+          Number(getSafePrice().toFixed(2)),
         quantity: 1,
         localizatons: {
-          title: product.attributes.localizations.data[0].attributes.title,
+          title: product.attributes.localizations?.data?.[0]?.attributes?.title || product.attributes.title || 'Unknown Product',
           description:
-            product.attributes.localizations.data[0].attributes.description,
-          slug: product.attributes.localizations.data[0].attributes.slug,
+            product.attributes.localizations?.data?.[0]?.attributes?.description || product.attributes.description || '',
+          slug: product.attributes.localizations?.data?.[0]?.attributes?.slug || product.attributes.slug || '',
         },
       };
 
@@ -74,13 +93,23 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
 
   const getPriceAfterDiscount = () => {
     return products.getPriceAfterDiscount(
-      product.attributes.discount.data,
+      product.attributes.discount?.data,
       product.attributes.price
     );
   };
 
+  const getSafePrice = () => {
+    const price = product.attributes.price;
+    return typeof price === 'number' && !isNaN(price) ? price : 0;
+  };
+
+  const isProductAvailable = () => {
+    const stock = product?.attributes?.product_inventory?.data?.attributes?.available_in_stock;
+    return stock != null && stock > 0;
+  };
+
   const foundInCart = useMemo(() => {
-    if (isUserLoggedIn()) {
+    if (isLoggedIn) {
       return cart.isInUserCart(product.id);
     } else {
       return cart.isInCart(product.id);
@@ -107,8 +136,14 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
     >
       <Button
         className={` py-2 ${
-          foundInCart ? `bg-emerald-500` : `bg-mainPink`
-        } text-mainWhite  w-full capitalize transition-all hover:bg-mainPink/90 text-2xl md:text-xl`}
+          !isProductAvailable()
+            ? `bg-gray-400 cursor-not-allowed`
+            : foundInCart
+            ? `bg-emerald-500`
+            : `bg-mainPink`
+        } text-mainWhite  w-full capitalize transition-all ${
+          !isProductAvailable() ? '' : 'hover:bg-mainPink/90'
+        } text-2xl md:text-xl`}
         endContent={
           addingToUserCartLoading ? (
             <Spinner
@@ -118,6 +153,8 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
                 circle2: "border-mainWhite",
               }}
             />
+          ) : !isProductAvailable() ? (
+            <MdOutlineRemoveShoppingCart />
           ) : foundInCart ? (
             <FaCheck />
           ) : (
@@ -126,7 +163,7 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
         }
         size="lg"
         // isLoading={addingToUserCartLoading}
-        isDisabled={foundInCart ? true : false}
+        isDisabled={!!foundInCart || !isProductAvailable()}
         disableAnimation
         disableRipple
         onClick={addProductToCart}
@@ -135,6 +172,8 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
       >
         {currentWidth < 768
           ? ""
+          : !isProductAvailable()
+          ? t("details.outStock")
           : foundInCart
           ? t("addedToCart")
           : t("addToCart")}

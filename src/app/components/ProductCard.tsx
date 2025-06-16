@@ -30,7 +30,7 @@ const ProductCard = ({ product }: productCardProps) => {
   const t = useTranslations("product");
   const currency = useTranslations("currency");
 
-  const { products, cart, wishlist, user, userWishlist } =
+  const { products, cart, user, userWishlist } =
     useContext(StoreContext);
 
   const router = useRouter();
@@ -47,12 +47,24 @@ const ProductCard = ({ product }: productCardProps) => {
 
   const getPriceAfterDiscount = () => {
     return products.getPriceAfterDiscount(
-      product.attributes.discount.data,
+      product.attributes.discount?.data,
       product.attributes.price
     );
   };
 
+  const isProductAvailable = () => {
+    const stock = product?.attributes?.product_inventory?.data?.attributes?.available_in_stock;
+    console.log(`Product ${product.id} stock:`, stock);
+    return stock != null && stock > 0;
+  };
+
   const addProductToCart = () => {
+    // Check if product is available in stock
+    if (!isProductAvailable()) {
+      console.log("Product is not available in stock");
+      return;
+    }
+
     if (isUserLoggedIn()) {
       if (!foundInCart) {
         setAddingToUserCartLoading(true);
@@ -71,22 +83,23 @@ const ProductCard = ({ product }: productCardProps) => {
       setAddingToUserCartLoading(true);
       const parsedProductToCartProduct: cartProductType = {
         id: product.id,
-        imgSrc: `${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`,
+        imgSrc: product.attributes.thumbnail?.data?.attributes?.url
+          ? `${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`
+          : '',
         title: product.attributes.title,
         slug: product.attributes.slug,
         description: product.attributes.description,
         prePrice: getPriceAfterDiscount()
-          ? Number(product.attributes.price.toFixed(2))
+          ? Number(Number(product.attributes.price).toFixed(2))
           : 0,
         price:
           getPriceAfterDiscount() ??
-          Number(product.attributes.price.toFixed(2)),
+          Number(Number(product.attributes.price).toFixed(2)),
         quantity: 1,
         localizatons: {
-          title: product.attributes.localizations.data[0].attributes.title,
-          description:
-            product.attributes.localizations.data[0].attributes.description,
-          slug: product.attributes.localizations.data[0].attributes.slug,
+          title: product.attributes.localizations?.data?.[0]?.attributes?.title || product.attributes.title,
+          description: product.attributes.localizations?.data?.[0]?.attributes?.description || product.attributes.description,
+          slug: product.attributes.localizations?.data?.[0]?.attributes?.slug || product.attributes.slug,
         },
       };
 
@@ -208,17 +221,11 @@ const ProductCard = ({ product }: productCardProps) => {
           href={`/product/${product.id}`}
           className="w-full grid place-items-center overflow-hidden"
         >
-          {/* <img
-              //   as={NextImage}
-              src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`}
-              //   quality={100}
-              alt="product image"
-              // className="w-full   h-full    "
-              className=" h-full  w-full object-contain "
-            /> */}
           <Image
             //   as={NextImage}
-            src={`${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`}
+            src={product.attributes.thumbnail?.data?.attributes?.url
+              ? `${process.env.NEXT_PUBLIC_HOST}${product.attributes.thumbnail.data.attributes.url}`
+              : ""}
             radius="sm"
             //   quality={100}
             alt="product image"
@@ -234,19 +241,18 @@ const ProductCard = ({ product }: productCardProps) => {
             <h1 className="text-sm md:text-xl   line-clamp-1 ">
               {locale === "en"
                 ? product.attributes.title
-                : product.attributes.localizations.data[0].attributes
-                    .title}{" "}
+                : product.attributes.localizations?.data?.[0]?.attributes?.title || product.attributes.title}{" "}
             </h1>
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <Rating
                   rating={products.getAverageRatings(
-                    product.attributes.reviews.data
+                    product.attributes.reviews?.data || []
                   )}
                   size="1rem"
                 />
                 <h1 className="text-mainBlack/50 text-sm">
-                  ({getTheLengthOfAllowedRatings(product.attributes.reviews)})
+                  ({getTheLengthOfAllowedRatings(product.attributes.reviews || { data: [] })})
                 </h1>
               </div>
               <div className="flex items-center gap-5">
@@ -254,7 +260,7 @@ const ProductCard = ({ product }: productCardProps) => {
                   <div className="relative ">
                     <div className="absolute top-1/2 -translate-y-1/2 w-full h-[2px] bg-black/50 -rotate-3" />
                     <h2 className="text-sm md:text-xl text-mainBlack/30 font-bold  text-center">
-                      {product.attributes.price.toFixed(2)}
+                      {Number(product.attributes.price).toFixed(2)}
                       <span className="text-sm ltr:ml-1 rtl:mr-1">
                         {currency("currency")}
                       </span>
@@ -264,7 +270,7 @@ const ProductCard = ({ product }: productCardProps) => {
                 <h2 className="text-sm md:text-xl text-mainBlack/70 font-bold">
                   {getPriceAfterDiscount()
                     ? getPriceAfterDiscount()
-                    : product.attributes.price.toFixed(2)}
+                    : Number(product.attributes.price).toFixed(2)}
                   <span className="text-sm ltr:ml-1 rtl:mr-1">
                     {currency("currency")}
                   </span>
@@ -276,15 +282,18 @@ const ProductCard = ({ product }: productCardProps) => {
             <Divider />
             <Button
               className={` ${
-                foundInCart ? `bg-emerald-500` : `bg-mainPink`
+                !!foundInCart ? `bg-emerald-500` :
+                !isProductAvailable() ? `bg-gray-400` : `bg-mainPink`
               } text-mainWhite w-full rounded-md transition-all capitalize hover:bg-mainPink/90 text-sm md:text-xl `}
-              endContent={foundInCart ? <FaCheck /> : <AiOutlineShoppingCart />}
+              endContent={!!foundInCart ? <FaCheck /> : <AiOutlineShoppingCart />}
               size="md"
               isLoading={addingToUserCartLoading}
-              isDisabled={foundInCart ? true : false}
+              isDisabled={!!foundInCart || !isProductAvailable()}
               onClick={addProductToCart}
             >
-              {foundInCart ? t("added") : t("add")} {t("cart")}
+              {!!foundInCart ? t("added") :
+               !isProductAvailable() ? (locale === "ar" ? "غير متوفر" : "Out of Stock") :
+               t("add")} {!isProductAvailable() ? "" : t("cart")}
             </Button>
           </div>
         </div>

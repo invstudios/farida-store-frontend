@@ -1,5 +1,6 @@
 "use client";
-import { Divider, Image } from "@nextui-org/react";
+import { Image } from "@nextui-org/react";
+import SafeDivider from "./SafeDivider";
 import React from "react";
 
 import { TfiEmail } from "react-icons/tfi";
@@ -18,7 +19,7 @@ const Footer = () => {
 
   return (
     <div className=" pt-20 pb-16" dir={locale === "en" ? "ltr" : "rtl"}>
-      <Divider />
+      <SafeDivider />
       <div className="min-h-[20rem] p-5 pb-0 flex flex-col gap-5 ">
         <div className="flex flex-col gap-5">
           <div className="flex flex-col justify-center gap-5 items-center ">
