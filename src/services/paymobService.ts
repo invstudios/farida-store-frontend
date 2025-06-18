@@ -190,8 +190,9 @@ class PaymobService {
         body: JSON.stringify(paymentData),
       });
 
+
       if (!response.ok) {
-        throw new Error(`Payment key generation failed: ${response.statusText}`);
+        throw new Error(`Payment key generation failed: ${response.ok}`);
       }
 
       const data: PaymobPaymentKeyResponse = await response.json();
@@ -265,19 +266,19 @@ class PaymobService {
         expiration: 3600, // 1 hour
         order_id: order.id,
         billing_data: {
-          apartment: orderDetails.customerData.apartment,
-          email: orderDetails.customerData.email,
-          floor: orderDetails.customerData.floor,
-          first_name: orderDetails.customerData.first_name,
-          street: orderDetails.customerData.street,
-          building: orderDetails.customerData.building,
-          phone_number: orderDetails.customerData.phone,
+          apartment: orderDetails.customerData.apartment || "NA",
+          email: orderDetails.customerData.email || "NA",
+          floor: orderDetails.customerData.floor || "NA",
+          first_name: orderDetails.customerData.first_name || "NA",
+          street: orderDetails.customerData.street || "NA",
+          building: orderDetails.customerData.building || "NA",
+          phone_number: orderDetails.customerData.phone || "NA",
           shipping_method: 'PKG',
-          postal_code: orderDetails.customerData.postal_code,
-          city: orderDetails.customerData.city,
-          country: orderDetails.customerData.country,
-          last_name: orderDetails.customerData.last_name,
-          state: orderDetails.customerData.state,
+          postal_code: orderDetails.customerData.postal_code || "NA",
+          city: orderDetails.customerData.city || "NA",
+          country: orderDetails.customerData.country || "NA",
+          last_name: orderDetails.customerData.last_name || "NA",
+          state: orderDetails.customerData.state || "NA",
         },
         currency: 'EGP',
         integration_id: this.integrationId,
