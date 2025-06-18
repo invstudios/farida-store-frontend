@@ -16,7 +16,14 @@ const CartPageContainer = ({}: CartPageContainerProps) => {
   const locale = useLocale();
   return (
     <div dir={locale === "en" ? "ltr" : "rtl"}>
-      {cart.productsCount === 0 ? <EmptyCart /> : <CartContent />}
+      {cart.productsCount === 0 ? (
+        <EmptyCart />
+      ) : (
+        <div className="px-5 md:px-9 lg:px-20">
+          {/* Progress Indicator */}
+          <CartContent />
+        </div>
+      )}
     </div>
   );
 };

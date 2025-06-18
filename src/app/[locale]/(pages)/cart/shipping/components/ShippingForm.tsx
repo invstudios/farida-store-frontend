@@ -27,8 +27,8 @@ const ShippingForm = () => {
   const router = useRouter();
   const t = useTranslations("shippingPage");
 
-  const goToConfirmationOrderPage = (orderNumber: string | number) => {
-    router.push(`/cart/confirmation?order_number=${orderNumber}`);
+  const goToPaymentPage = () => {
+    router.push(`/cart/payment`);
   };
 
   const setSelectedAddressValues = () => {
@@ -42,42 +42,22 @@ const ShippingForm = () => {
   };
 
   const submitForm = (data: FieldValues) => {
-    userOrders.setIsCreatingOrderLoading = true;
-
-    const userOrderDetailData = {
-      totalPrice: Number((cart.totalPrice + 100).toFixed(2)),
-      userPaymentId: null,
-      userId: user.strapiUserdata.id.toString(),
-
-      orderNotes: data.notes,
-      orderAddress: {
-        street: data.street,
-        state: data.state,
-        city: data.city,
-        country: data.country,
-        postal_code: data.postal,
-        phone: data.phone,
-        second_phone: data.second_phone,
-      },
-      // orderItemsIds: userOrders.orderItems,
+    // Store shipping data in localStorage for payment page
+    const shippingData = {
+      phone: data.phone,
+      second_phone: data.second_phone,
+      state: data.state,
+      country: data.country,
+      city: data.city,
+      street: data.street,
+      postal_code: data.postal,
+      notes: data.notes,
     };
 
-    userOrders.createNewOrder(userOrderDetailData).then((data) => {
-      if (data) {
-        userOrders
-          .createOrderItemsFromCart(cart.userCartItems, data.data.id)
-          .then(() => {
-            user.clearUserCart(cart.userCartItems).then(() => {
-              toast.success("order created");
-              userOrders.setIsCreatingOrderLoading = false;
-              goToConfirmationOrderPage(data.data.id);
-            });
-          })
-          .catch((err) => {
-            toast.error(`order failed : ${err.message}`);
-          });
-      }
-    });
+    localStorage.setItem('shippingData', JSON.stringify(shippingData));
+
+    // Navigate to payment page
+    goToPaymentPage();
 
     reset();
   };
@@ -252,7 +232,7 @@ const ShippingForm = () => {
           className="bg-mainBlack text-mainWhite capitalize "
           type="submit"
         >
-          {t("details.form.action.complete")}
+          {t("details.form.action.continue")}
         </Button>
       </form>
       <ToastContainer />

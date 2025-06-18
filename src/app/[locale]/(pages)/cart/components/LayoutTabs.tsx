@@ -15,7 +15,7 @@ const LayoutTabs = () => {
       className="flex flex-col gap-2 w-full h-auto px-5 md:px-9 lg:px-20 py-3"
       dir={locale === "en" ? "ltr" : "rtl"}
     >
-      <div className="w-full  grid grid-rows-[auto_auto_auto] grid-cols-1 gap-y-5 mt-5 md:mt-0 md:grid-cols-3 md:grid-rows-1 gap-x-1  ">
+      <div className="w-full  grid grid-rows-[auto_auto_auto_auto] grid-cols-1 gap-y-5 mt-5 md:mt-0 md:grid-cols-4 md:grid-rows-1 gap-x-1  ">
         <div className="grid grid-rows-[auto_auto] grid-cols-1 md:grid-rows-1 gap-2">
           <CartTab
             step={1}
@@ -74,6 +74,33 @@ const LayoutTabs = () => {
             title={t("tabs.step3.title")}
             description={t("tabs.step3.description")}
             opacity={
+              currentLink === "/cart/payment" ? "opacity-100" : "opacity-50"
+            }
+            targetLink={"/cart/payment"}
+            isChecked={currentLink === "/cart/payment" ? true : false}
+          />
+          <Progress
+            aria-label="Loading..."
+            value={
+              currentLink === "/cart/payment" ||
+              currentLink === "/cart/payment"
+                ? 100
+                : 0
+            }
+            size="sm"
+            radius="none"
+            className="w-full md:hidden ltr:rotate-0 rtl:rotate-180"
+            classNames={{
+              indicator: "bg-gradient-to-r from-mainPink to-mainPink",
+            }}
+          />
+        </div>
+        <div className="grid grid-rows-[auto_auto] grid-cols-1 md:grid-rows-1 gap-2">
+          <CartTab
+            step={4}
+            title={t("tabs.step4.title")}
+            description={t("tabs.step4.description")}
+            opacity={
               currentLink === "/cart/confirmation"
                 ? "opacity-100"
                 : "opacity-50"
@@ -97,9 +124,11 @@ const LayoutTabs = () => {
         aria-label="Loading..."
         value={
           currentLink === "/cart"
-            ? 100 / 3
+            ? 100 / 4
             : currentLink === "/cart/shipping"
-            ? (100 / 3) * 2
+            ? (100 / 4) * 2
+            : currentLink === "/cart/payment"
+            ? (100 / 4) * 3
             : currentLink === "/cart/confirmation"
             ? 100
             : 0

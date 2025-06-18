@@ -191,10 +191,14 @@
         "description": "view your items"
       },
       "step2": {
-        "title": "shipping and payment",
+        "title": "shipping",
         "description": "add some details about you"
       },
       "step3": {
+        "title": "payment",
+        "description": "Select your payment way"
+      },
+      "step4": {
         "title": "confirmation",
         "description": "review your order"
       }
@@ -258,7 +262,8 @@
           "placeholder": "If you have any notes about your order, write it here"
         },
         "action": {
-          "complete": "complete your order"
+          "complete": "complete your order",
+          "continue": "continue to payment"
         }
       },
       "addresses": {
@@ -512,5 +517,25 @@
     "color": "color",
     "minPrice": "min price",
     "maxPrice": "max price"
+  },
+  "paymentPage": {
+    "title": "Payment",
+    "methods": {
+      "card": "Credit/Debit Card",
+      "cod": "Cash on Delivery"
+    },
+    "summary": {
+      "title": "Order Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "total": "Total"
+    }
+  },
+  "paymentCallback": {
+    "processing": "Processing Payment...",
+    "success": "Payment Successful!",
+    "failed": "Payment Failed",
+    "pending": "Payment Pending"
   }
 }

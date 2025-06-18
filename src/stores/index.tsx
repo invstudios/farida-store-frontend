@@ -23,6 +23,7 @@ import { AddressModalStore } from "./addressModalStore";
 import { EditProfileModalStore } from "./editProfileModalStore";
 import { FastAdsStore } from "./fastAdsStore";
 import { FiltersDropMenuStore } from "./filtersDropMenu";
+import PaymentStore from "./paymentStore";
 
 // cart store instance
 
@@ -116,6 +117,10 @@ const fastAdsInstance = new FastAdsStore();
 
 const filtersDropMenuInstance = new FiltersDropMenuStore();
 
+// payment store
+
+const paymentInstance = new PaymentStore();
+
 // ==========================================================
 // this object is for all stores that will for all states
 
@@ -143,6 +148,7 @@ export const store = {
   profileModal: editProfileModalInstance,
   fastAds: fastAdsInstance,
   filtersDrop: filtersDropMenuInstance,
+  payment: paymentInstance,
 };
 
 // Create the StoreContext here to avoid circular dependency

@@ -11,6 +11,7 @@ import { useRouter } from "@/navigation";
 import { observer } from "mobx-react-lite";
 import NoOrder from "./NoOrder";
 import { useLocale } from "next-intl";
+import PaymentDetails from "./PaymentDetails";
 
 const ConfirmationPageContainer = () => {
   const { userOrders, user } = useContext(StoreContext);
@@ -48,11 +49,13 @@ const ConfirmationPageContainer = () => {
     <div dir={locale === "en" ? "ltr" : "rtl"}>
       {orderId && userOrders.orderDetails.data && foundedInUserOrders ? (
         <div className="flex flex-col gap-10 mt-20 px-5 md:px-10 lg:px-20">
+
           <Thanks />
           {/* <OrderInformationContainer /> */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 ">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 ">
             <Orderinfo />
             <OrderAddress />
+            <PaymentDetails />
           </div>
           <ItemsContainer />
         </div>

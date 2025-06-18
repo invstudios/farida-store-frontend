@@ -29,6 +29,20 @@ const Orderinfo = () => {
       })
     : t("orderInfo.date.soon");
 
+  // Determine payment method based on order notes and user_payment
+  const getPaymentMethodText = () => {
+    const orderNotes = userOrders.orderDetails.data?.attributes?.order_notes || "";
+    const userPayment = userOrders.orderDetails.data?.attributes?.user_payment;
+
+    if (orderNotes.includes("Paymob") || orderNotes.includes("Transaction ID")) {
+      return locale === "ar" ? "دفع إلكتروني" : "Online Payment";
+    } else if (orderNotes.includes("Cash on Delivery") || !userPayment) {
+      return locale === "ar" ? "الدفع عند الاستلام" : "Cash on Delivery";
+    } else {
+      return locale === "ar" ? "دفع إلكتروني" : "Online Payment";
+    }
+  };
+
   const information = [
     {
       title: t("orderInfo.information.orderFor"),
@@ -56,7 +70,7 @@ const Orderinfo = () => {
     },
     {
       title: t("orderInfo.information.payment"),
-      description: t("orderInfo.information.cash"),
+      description: getPaymentMethodText(),
     },
     {
       title: t("orderInfo.information.notes"),
