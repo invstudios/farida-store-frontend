@@ -2,7 +2,6 @@
 import { Divider, Input } from "@nextui-org/react";
 import React, { useContext } from "react";
 import ShippingForm from "./ShippingForm";
-import TotalPrice from "../../components/TotalPrice";
 import ShippingOrderAndPrice from "./ShippingOrderAndPrice";
 import { StoreContext } from "@/contexts/StoreContext";
 import EmptyCart from "../../components/EmptyCart";
@@ -19,12 +18,15 @@ const ShippingContent = () => {
     <div className="relative" dir={locale === "en" ? "ltr" : "rtl"}>
       {userOrders.isCreatingOrderLoading && <LoadingOverlay />}
       {cart.productsCount > 0 ? (
-        <div className="grid grid-rows-[auto_auto_auto] grid-cols-1 lg:grid-rows-1 lg:grid-cols-[3fr_auto_1.5fr] px-5 md:px-9 lg:px-20 gap-5">
-          <ShippingForm />
-          <Divider
-            orientation={currentWidth > 1024 ? "vertical" : "horizontal"}
-          />
-          <ShippingOrderAndPrice />
+        <div className="px-5 md:px-9 lg:px-20">
+
+          <div className="grid grid-rows-[auto_auto_auto] grid-cols-1 lg:grid-rows-1 lg:grid-cols-[3fr_auto_1.5fr] gap-5">
+            <ShippingForm />
+            <Divider
+              orientation={currentWidth > 1024 ? "vertical" : "horizontal"}
+            />
+            <ShippingOrderAndPrice />
+          </div>
         </div>
       ) : (
         <EmptyCart />
