@@ -19,7 +19,6 @@ const OrderForm = () => {
   const locale = useLocale();
 
   const goToOrder = (data: FieldValues) => {
-    // console.log({ data });
     setIsLoading(true);
     setErrorMessage("");
     userOrders.getOrderDetails(data.onumber).then((order) => {
@@ -36,7 +35,6 @@ const OrderForm = () => {
         setErrorMessage(t("form.invalidInfo"));
         setIsLoading(false);
       }
-      // console.log({ order });
     });
   };
 

@@ -73,8 +73,6 @@ const FiltersDropMenu = () => {
           onClick={() => {
             setFilter(filter.type);
             setSelected(filter.type);
-
-            // console.log("change wishlist filters to : ", selection);
           }}
         >
           {filter.type}

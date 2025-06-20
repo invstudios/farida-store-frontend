@@ -40,7 +40,6 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
 
     // Check if product is available in stock
     if (!isProductAvailable()) {
-      console.log("Product is not available in stock");
       return;
     }
 
@@ -54,7 +53,6 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
             setAddingToUserCartLoading(false);
           })
           .catch((err) => {
-            console.log(err);
             setAddingToUserCartLoading(false);
           });
       }
@@ -85,7 +83,6 @@ const AddToCartButton = ({ product }: AddToCartButtonProps) => {
           slug: product.attributes.localizations?.data?.[0]?.attributes?.slug || product.attributes.slug || '',
         },
       };
-      console.log("parsedProductToCartProduct : ",parsedProductToCartProduct);
       cart.addProduct(parsedProductToCartProduct);
       setAddingToUserCartLoading(false);
     }

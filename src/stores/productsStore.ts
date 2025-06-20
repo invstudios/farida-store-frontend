@@ -61,14 +61,13 @@ export class ProductsStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log("this is the data of the promise we get : ", data);
         runInAction(() => {
           this.products = data.data || [];
           this.pagination = data.meta?.pagination || this.pagination;
           this.productsLoading = false;
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   getSingleProduct = async (productId: string) => {
@@ -82,7 +81,7 @@ export class ProductsStore {
           this.targetProduct = data.data;
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
 
     await this.getTargetProductsReviews(productId);
     await this.getTargetProductArabicData(productId);
@@ -106,11 +105,6 @@ export class ProductsStore {
       if (data?.data?.attributes?.localizations?.data?.[0]) {
         runInAction(() => {
           this.targetProductArabicData = data.data.attributes.localizations.data[0];
-
-          console.log(
-            "this is the target products arabic data : ",
-            data.data.attributes.localizations.data[0]
-          );
         });
       } else {
         console.warn("No Arabic localization data found for product:", productId);
@@ -138,11 +132,6 @@ export class ProductsStore {
       if (data?.data?.attributes?.reviews?.data) {
         runInAction(() => {
           this.targetProductReviews = data.data.attributes.reviews.data;
-
-          console.log(
-            "this is the target products reviews : ",
-            data.data.attributes.reviews.data
-          );
         });
       } else {
         console.warn("No reviews data found for product:", productId);
@@ -170,7 +159,7 @@ export class ProductsStore {
           this.pagination = data.meta?.pagination || this.pagination;
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   getSaleProducts = async () => {
@@ -185,7 +174,7 @@ export class ProductsStore {
           this.pagination = data.meta?.pagination || this.pagination;
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   getDealProducts = async () => {
@@ -200,7 +189,7 @@ export class ProductsStore {
           this.pagination = data.meta?.pagination || this.pagination;
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   getProductsByFilters = async (
@@ -329,7 +318,7 @@ export class ProductsStore {
             this.productsLoading = false;
           });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {});
     } else {
       interface QueryParams {
         "populate[images]"?: string;
@@ -432,10 +421,6 @@ export class ProductsStore {
       await fetch(url, this.getMethodOptions)
         .then((res) => res.json())
         .then((data) => {
-          // console.log(
-          //   "this is the data of the promise we get from deal products : ",
-          //   data
-          // );
 
           let beforeSortingProducts: strapiProductType[] = [];
 
@@ -476,7 +461,7 @@ export class ProductsStore {
             this.productsLoading = false;
           });
         })
-        .catch((err) => console.log(err));
+        .catch((err) => {});
     }
   };
 
@@ -556,17 +541,13 @@ export class ProductsStore {
     await fetch(url, this.getMethodOptions)
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from deal products : ",
-        //   data
-        // );
         runInAction(() => {
           this.products = data.data || [];
           this.pagination = data.meta?.pagination || this.pagination;
           this.productsLoading = false;
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   // methods to handle another things far away from api endpoints

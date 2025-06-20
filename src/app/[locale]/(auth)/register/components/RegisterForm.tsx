@@ -32,17 +32,6 @@ const RegisterForm = () => {
         registerForm.username.length > 0 &&
         registerForm.password === registerForm.confirmedPassword
     );
-    console.log(
-      registerForm.isValidEmail &&
-        registerForm.isValidPassword &&
-        registerForm.email.length > 0 &&
-        registerForm.password.length > 0 &&
-        registerForm.confirmedPassword.length > 0 &&
-        registerForm.firstName.length > 0 &&
-        registerForm.lastName.length > 0 &&
-        registerForm.username.length > 0 &&
-        registerForm.password === registerForm.confirmedPassword
-    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     registerForm.isValidEmail,

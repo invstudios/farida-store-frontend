@@ -26,7 +26,6 @@ const UserLoggedInUi = () => {
   //     router.push("/login")
   //     }).catch((err) => {
   //         setIsLoading(false)
-  //         console.log(err)
   //     })
   // }
 

@@ -68,10 +68,6 @@ export class RegisterFormStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data fter the user logged in from strapi : ",
-        //   data
-        // );
 
         if (data.jwt) {
           Cookies.set("credentials", data.jwt);
@@ -93,7 +89,6 @@ export class RegisterFormStore {
         });
       })
       .catch((err) => {
-        console.log("this is strapi logged in error :", err);
 
         runInAction(() => {
           this.isLoading = false;

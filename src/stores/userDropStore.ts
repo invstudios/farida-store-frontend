@@ -62,7 +62,6 @@ export class UserDropStore {
         // router.push("/");
       })
       .catch((err) => {
-        console.log(err);
         this.errorMessage = err.message;
         this.isLoading = false;
       });

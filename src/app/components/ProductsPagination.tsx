@@ -36,14 +36,6 @@ const ProductsPagination = () => {
   useEffect(() => {
     products.setPaginationPage(currentPage, pageSize ? Number(pageSize) : 12);
 
-    //  console.log("this is the route of this page : ", pathname)
-    //  console.log("is this route search route : ", pathname==="/search")
-    //  console.log("this is search query  : ", searchQuery)
-
-    //  console.log("this is the search params values : " , searchParams)
-    //  console.log("this is the url params values : " , urlParams)
-    //  console.log("this is the url params values : " , urlParams.name)
-
     if ((searchParams.size > 0 && pathname !== "/search") || urlParams.name) {
       products.getProductsByFilters(
         sorting ?? "",
@@ -74,8 +66,6 @@ const ProductsPagination = () => {
 
       filter.hideWholeFilterSidebar();
     }
-
-    //  console.log("this is the search params from pagination : ", salesOnly)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

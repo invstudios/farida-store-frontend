@@ -50,7 +50,6 @@ const ProductsSlider = () => {
       const x = e.pageX - sliderRef.current?.offsetLeft;
 
       const walk = x - startX;
-      // console.log({ walk });
       sliderRef.current.scrollLeft = scrollLeft - walk;
     }
   };
@@ -58,7 +57,6 @@ const ProductsSlider = () => {
   useEffect(() => {
     categories.getAllCategories();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    console.log(categories.categories);
   }, []);
   return (
     <motion.div

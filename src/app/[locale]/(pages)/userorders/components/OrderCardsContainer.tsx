@@ -13,8 +13,6 @@ const OrderCardsContainer = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
-  console.log("userOrders.userOrders : ", Array(userOrders.userOrders))
   return (
     <>
       {userOrders?.userOrders?.length > 0 ? (

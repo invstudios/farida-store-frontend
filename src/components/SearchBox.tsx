@@ -37,7 +37,6 @@ const SearchBox = () => {
 
   useEffect(() => {
     const clickingEnter = (e: KeyboardEvent) => {
-      // console.log("this is key down event ",e)
       if (e.key === "Enter" && searchBox.searchInputValue.length > 0) {
         e.preventDefault();
 

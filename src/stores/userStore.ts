@@ -34,15 +34,11 @@ export class userStore {
     )
       .then((res) => res.json())
       .then((data): void => {
-        console.log("this is user data : ", data);
-
         runInAction(() => {
           this.strapiUserdata = data;
         });
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   // user logged out
@@ -61,11 +57,6 @@ export class userStore {
     productId: string | number,
     quantity: number
   ) => {
-    console.log({
-      product: productId.toString(),
-      quantity: quantity,
-      cart: this.strapiUserdata.cart.id,
-    })
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/cart-items`,
       {
@@ -83,12 +74,6 @@ export class userStore {
         }),
       }
     );
-    console.log({
-      product: productId.toString(),
-      quantity: quantity,
-      cart: this.strapiUserdata.cart.id,
-    })
-    console.log("status post data : ", response.ok)
     return response.ok;
   };
 
@@ -130,7 +115,7 @@ export class userStore {
   };
 
   mergeLocalCartWithUserCart = async (userCartItems: userCartProductType[]) => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return false;
 
     const localCartItems: cartProductType[] = JSON.parse(
       sessionStorage.getItem("cart") ?? "[]"
@@ -152,7 +137,7 @@ export class userStore {
   };
 
   clearLocalCart = async () => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return false;
 
     sessionStorage.removeItem("cart");
 
@@ -209,12 +194,6 @@ export class userStore {
     firstName: string;
     lastName: string;
   }) => {
-    console.log({
-      username: newUserData.username,
-      email: newUserData.email,
-      first_name: newUserData.firstName,
-      last_name: newUserData.lastName,
-    })
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/${this.strapiUserdata.id}`,
       {

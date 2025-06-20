@@ -19,7 +19,6 @@ const CartSideBarContent = () => {
 
   useEffect(() => {
     cart.getAllCartItems();
-    // console.log("getting all cart items");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     user.isLoading,

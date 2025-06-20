@@ -72,7 +72,6 @@ const RawProductCard = ({ product }: rawProductProps) => {
             setAddingToUserCartLoading(false);
           })
           .catch((err) => {
-            console.log(err);
             setAddingToUserCartLoading(false);
           });
       }
