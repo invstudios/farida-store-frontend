@@ -232,23 +232,11 @@ export class OrdersStore {
 
     if (response.ok) {
       let data = await response.json();
-      console.log(data);
+
       if (data) {
         if (data?.data?.attributes?.user?.data?.id == userId) {
-          console.log(
-            "test all 1 : ",
-            typeof data?.data?.attributes?.user?.data?.id,
-            typeof userId
-          );
-          console.log("test all 1 : ", data?.data?.attributes?.user, userId);
           return true;
         } else {
-          console.log(
-            "test all 2 : ",
-            typeof data?.data?.attributes?.user?.data?.id,
-            typeof userId
-          );
-          console.log("test all 2 : ", data?.data?.attributes?.user, userId);
           return false;
         }
       } else {
@@ -271,11 +259,6 @@ export class OrdersStore {
 
     if (response.ok) {
       let data = await response.json();
-
-      // console.log(
-      //   "this is the data from get user orders functiion :- ",
-      //   data.order_details
-      // );
 
       if (data) {
         runInAction(() => {

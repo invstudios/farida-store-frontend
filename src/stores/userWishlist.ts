@@ -28,8 +28,7 @@ export class userWishListStore {
     )
       .then((res) => res.json())
       .then((data): void => {
-        // console.log("this is user wishlist items data : ", data);
-
+        
         runInAction(() => {
           this.userWishlist = data.wishlist;
         });
@@ -69,10 +68,8 @@ export class userWishListStore {
           this.userWishlistProductsCount = itemsOfUserWishlist.length;
         });
 
-        // console.log("this is user cart items ", itemsOfUserCart);
       })
       .catch((err) => {
-        console.log(err);
       });
   };
 
@@ -150,7 +147,6 @@ export class userWishListStore {
   }
 
   addProductToUserWishlist = async (productId: string | number) => {
-    console.log("productId : ", productId)
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/wishlist-items`,
       {

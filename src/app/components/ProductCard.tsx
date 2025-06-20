@@ -54,14 +54,12 @@ const ProductCard = ({ product }: productCardProps) => {
 
   const isProductAvailable = () => {
     const stock = product?.attributes?.product_inventory?.data?.attributes?.available_in_stock;
-    console.log(`Product ${product.id} stock:`, stock);
     return stock != null && stock > 0;
   };
 
   const addProductToCart = () => {
     // Check if product is available in stock
     if (!isProductAvailable()) {
-      console.log("Product is not available in stock");
       return;
     }
 
@@ -75,7 +73,6 @@ const ProductCard = ({ product }: productCardProps) => {
             setAddingToUserCartLoading(false);
           })
           .catch((err) => {
-            console.log(err);
             setAddingToUserCartLoading(false);
           });
       }

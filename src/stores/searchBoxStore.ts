@@ -65,17 +65,13 @@ export class SearchBoxStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        console.log(
-          "this is the data of the promise we get from deal products : ",
-          data
-        );
 
         runInAction(() => {
           this.quickProducts = data.data;
           this.quickProductsLoading = false;
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   setSearchInputValue(val: string) {

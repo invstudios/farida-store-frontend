@@ -49,7 +49,7 @@ const GoogleProvider = ({ format = "large" }: providerProps) => {
     //  }).then(() => {
     //    router.push("/")
     //   })
-    // }).catch((err) => console.log(err))
+    // }).catch((err) => {})
   };
 
   return (

@@ -26,15 +26,11 @@ export class CategoriesStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from categories : ",
-        //   data
-        // );
         runInAction(() => {
           this.categories = data.data;
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   getSomeCategories = async (count: number, locale: string) => {
@@ -44,15 +40,11 @@ export class CategoriesStore {
     )
       .then((res) => res.json())
       .then((data) => {
-        // console.log(
-        //   "this is the data of the promise we get from categories : ",
-        //   data
-        // );
         runInAction(() => {
           this.someCategories = data.data;
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 
   getArabicCategory = async (category: string) => {
@@ -62,17 +54,12 @@ export class CategoriesStore {
     )
       .then((res) => res.json())
       .then((data: ArabicCategoryType) => {
-        // console.log(
-        //   "this is the data of the promise we get from categories : ",
-        //   data
-        // );
         runInAction(() => {
           this.arabicCategory =
             data.data[0].attributes.localizations?.data[0].attributes.name ??
             "";
-          console.log("this is data from arabic category :", { data });
         });
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {});
   };
 }

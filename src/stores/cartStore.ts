@@ -64,7 +64,6 @@ export class CartStore {
     )
       .then((res) => res.json())
       .then((data): void => {
-        // console.log("this is user cart items data : ", data);
 
         runInAction(() => {
           this.userCart = data.cart;
@@ -72,10 +71,6 @@ export class CartStore {
 
         let itemsOfUserCart: userCartProductType[] = [];
         data?.cart?.cart_items?.map((item: CartItem) => {
-          // console.log(
-          //   `this is porduct object of product ${item.product.id} : `,
-          //   item.product
-          // );
           const userCartItem: userCartProductType = {
             cartItemId: item.id,
             id: item.product.id,
@@ -104,12 +99,9 @@ export class CartStore {
           this.userCartItems = itemsOfUserCart;
           this.productsCount = itemsOfUserCart.length;
         });
-
-        // console.log("this is user cart items ", itemsOfUserCart);
         this.getTotalPrice();
       })
       .catch((err) => {
-        console.log(err);
       });
   };
 
@@ -188,8 +180,6 @@ export class CartStore {
     const founded = this.userCartItems.find((product) => {
       return product.id === productId;
     });
-
-    // console.log("this product founded : ", founded);
 
     return founded;
   }

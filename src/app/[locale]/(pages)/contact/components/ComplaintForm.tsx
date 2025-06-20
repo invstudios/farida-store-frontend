@@ -31,7 +31,6 @@ const ComplaintForm = () => {
       <form
         onSubmit={handleSubmit((data) => {
           submitcomplaint();
-          // console.log({ data });
         })}
         className="w-full flex flex-col gap-5"
       >

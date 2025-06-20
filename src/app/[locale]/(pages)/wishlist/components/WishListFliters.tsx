@@ -84,7 +84,6 @@ const WishListFliters = ({
             }}
             onSelectionChange={(selection) => {
               setFilter(selection);
-              // console.log("change wishlist filters to : ", selection);
             }}
           >
             {(item) => (

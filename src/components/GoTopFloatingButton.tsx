@@ -15,8 +15,6 @@ const GoTopFloatingButton = () => {
 
   useEffect(() => {
     const scrolling = () => {
-      // console.log("windo height", document.body.offsetHeight);
-      // console.log("windo scrolling", scrollY);
       setScreenScrollY(scrollY);
     };
 

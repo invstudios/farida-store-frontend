@@ -26,12 +26,9 @@ const LoginForm = () => {
     e.preventDefault();
 
     // loginForm.firebaseLoginWithEmailAndPass()?.then(() => {
-    //     console.log("3")
     //     loginForm.setIsloading(false)
     //     router.push("/")
     // }).catch((err) => {
-    //     console.log(err)
-    //     console.log("4")
     //     loginForm.setIsloading(false)
     //     loginForm.setErrMessage(err.message)
     // })
