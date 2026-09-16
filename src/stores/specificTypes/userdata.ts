@@ -115,10 +115,11 @@ export type UserPayment = {
   id: number;
   payment_type: string;
   cardholder_name: string;
-  card_number: string;
+  provider_token?: string;
+  card_brand?: string;
+  last_four?: string;
   expiration_month: string;
   expiration_year: string;
-  cvv: string;
   createdAt: Date;
   updatedAt: Date;
   publishedAt: Date;

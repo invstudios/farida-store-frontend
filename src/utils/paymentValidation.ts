@@ -211,16 +211,11 @@ export function calculatePaymentFees(amount: number, method: string): number {
 export function maskSensitiveData(data: any): any {
   const masked = { ...data };
   
-  // Mask card numbers
-  if (masked.card_number) {
-    masked.card_number = masked.card_number.replace(/\d(?=\d{4})/g, '*');
+  // Mask provider tokens (never expose in logs)
+  if (masked.provider_token) {
+    masked.provider_token = '***';
   }
-  
-  // Mask CVV
-  if (masked.cvv) {
-    masked.cvv = '***';
-  }
-  
+
   // Mask API keys
   if (masked.api_key) {
     masked.api_key = masked.api_key.substring(0, 8) + '***';
