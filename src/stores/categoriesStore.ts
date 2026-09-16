@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { CategoryType } from "./specificTypes/catgorytype";
 import { ArabicCategoryType } from "./specificTypes/arabicCategoryType";
+import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class CategoriesStore {
   categories: CategoryType[] = [];
@@ -11,7 +12,6 @@ export class CategoriesStore {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: process.env.NEXT_PUBLIC_STRAPI_API_TOKEN ?? "",
     },
   };
 
@@ -21,7 +21,7 @@ export class CategoriesStore {
 
   getAllCategories = async () => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/categories?populate=*`,
+      `${STRAPI_ENDPOINT}/categories?populate=*`,
       this.getOptions
     )
       .then((res) => res.json())
@@ -35,7 +35,7 @@ export class CategoriesStore {
 
   getSomeCategories = async (count: number, locale: string) => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/categories?populate=*&pagination[page]=1&pagination[pageSize]=${count}&locale=${locale}`,
+      `${STRAPI_ENDPOINT}/categories?populate=*&pagination[page]=1&pagination[pageSize]=${count}&locale=${locale}`,
       this.getOptions
     )
       .then((res) => res.json())
@@ -49,7 +49,7 @@ export class CategoriesStore {
 
   getArabicCategory = async (category: string) => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/categories?filters[$and][0][name][$eq]=${category}&populate=localizations`,
+      `${STRAPI_ENDPOINT}/categories?filters[$and][0][name][$eq]=${category}&populate=localizations`,
       this.getOptions
     )
       .then((res) => res.json())

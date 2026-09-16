@@ -15,6 +15,8 @@ export type Userdata = {
   updatedAt: Date;
   first_name: string;
   last_name: string;
+  phone?: string;
+  second_phone?: string;
   role: Role;
   cart: Cart;
   wishlist: Cart;

@@ -8,9 +8,9 @@ import GoogleProvider from "../../GoogleProvider";
 
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
-import Cookies from "js-cookie";
 import { useScreenSize } from "react-screen-size-helper";
 import { useLocale, useTranslations } from "next-intl";
+import { isUserLoggedIn } from "@/functions/credentials";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -37,7 +37,7 @@ const LoginForm = () => {
   };
 
   useEffect(() => {
-    if (Cookies.get("credentials")) {
+    if (isUserLoggedIn()) {
       router.push("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,10 +1,10 @@
 "use client";
-import Cookies from "js-cookie";
 import { makeAutoObservable, runInAction } from "mobx";
 import { Userdata } from "./specificTypes/userdata";
 import { cartProductType } from "./specificTypes/cartProductType";
 import { userCartProductType } from "./specificTypes/userCartProductType";
-import { isUserLoggedIn } from "@/functions/credentials";
+import { destroySession } from "@/functions/credentials";
+import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class userStore {
   strapiUserdata: Userdata = {} as Userdata;
@@ -23,12 +23,11 @@ export class userStore {
 
   getUserData = async () => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/me?populate=*`,
+      `${STRAPI_ENDPOINT}/users/me?populate=*`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("credentials")}`,
         },
       }
     )
@@ -45,7 +44,7 @@ export class userStore {
 
   userLogout() {
     const logoutPromise = new Promise((resolve, reject) => {
-      resolve(Cookies.remove("credentials"));
+      resolve(destroySession());
     });
 
     return logoutPromise;
@@ -58,12 +57,11 @@ export class userStore {
     quantity: number
   ) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/cart-items`,
+      `${STRAPI_ENDPOINT}/cart-items`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
         body: JSON.stringify({
           data: {
@@ -79,12 +77,11 @@ export class userStore {
 
   removeProductFromUserCart = async (cartItemId: number | string) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/cart-items/${cartItemId}`,
+      `${STRAPI_ENDPOINT}/cart-items/${cartItemId}`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     );
@@ -98,12 +95,11 @@ export class userStore {
     newQuantity: number
   ) => {
     return await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/cart-items/${cartItemId}`,
+      `${STRAPI_ENDPOINT}/cart-items/${cartItemId}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
         body: JSON.stringify({
           data: {
@@ -156,12 +152,11 @@ export class userStore {
       this.userReviewLoading = true;
     });
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/reviews`,
+      `${STRAPI_ENDPOINT}/reviews`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
         body: JSON.stringify({
           data: {
@@ -195,12 +190,11 @@ export class userStore {
     lastName: string;
   }) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/${this.strapiUserdata.id}`,
+      `${STRAPI_ENDPOINT}/users/${this.strapiUserdata.id}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
         body: JSON.stringify({
           username: newUserData.username,

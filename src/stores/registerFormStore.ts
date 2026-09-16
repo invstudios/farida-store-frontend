@@ -1,5 +1,6 @@
-import Cookies from "js-cookie";
 import { makeAutoObservable, runInAction } from "mobx";
+import { STRAPI_ENDPOINT } from "@/api/config";
+import { createSession } from "@/functions/credentials";
 
 export class RegisterFormStore {
   email: string = "";
@@ -51,7 +52,7 @@ export class RegisterFormStore {
     });
 
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/auth/local/register`,
+      `${STRAPI_ENDPOINT}/auth/local/register`,
       {
         method: "POST",
         headers: {
@@ -67,12 +68,15 @@ export class RegisterFormStore {
       }
     )
       .then((res) => res.json())
-      .then((data) => {
-
+      .then(async (data) => {
         if (data.jwt) {
-          Cookies.set("credentials", data.jwt);
-          this.createUserCart(data.user.id, data.jwt);
-          this.createUserWishlist(data.user.id, data.jwt);
+          await createSession(data.jwt);
+          await this.createUserCart(data.user.id);
+          await this.createUserWishlist(data.user.id);
+          runInAction(() => {
+            this.isLoading = false;
+          });
+          return;
         }
         //  this.products = data.data;
         //  this.pagination = data.meta.pagination;
@@ -98,12 +102,11 @@ export class RegisterFormStore {
 
   // create user cart
 
-  createUserCart = async (userId: number | string, jwt: string) => {
-    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/carts`, {
+  createUserCart = async (userId: number | string) => {
+    await fetch(`${STRAPI_ENDPOINT}/carts`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify({
         data: {
@@ -116,12 +119,11 @@ export class RegisterFormStore {
 
   // create user wishlist
 
-  createUserWishlist = async (userId: number | string, jwt: string) => {
-    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/wishlists`, {
+  createUserWishlist = async (userId: number | string) => {
+    await fetch(`${STRAPI_ENDPOINT}/wishlists`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${jwt}`,
       },
       body: JSON.stringify({
         data: {

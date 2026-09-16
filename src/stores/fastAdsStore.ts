@@ -16,7 +16,6 @@ export class FastAdsStore {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `${process.env.NEXT_PUBLIC_STRAPI_API_TOKEN}`,
         },
       }
     );

@@ -1,5 +1,5 @@
-import { isUserLoggedIn } from "@/functions/credentials";
 import { makeAutoObservable, runInAction } from "mobx";
+import { STRAPI_ENDPOINT } from "@/api/config";
 import {
   MainAddressData,
   UserAddressType,
@@ -17,12 +17,11 @@ export class UserAddressesStore {
 
   getAllUserAddresses = async () => {
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/me?populate=user_addresses`,
+      `${STRAPI_ENDPOINT}/users/me?populate=user_addresses`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     );
@@ -46,12 +45,11 @@ export class UserAddressesStore {
     });
 
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/user-addresses/${addressId}`,
+      `${STRAPI_ENDPOINT}/user-addresses/${addressId}`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     );

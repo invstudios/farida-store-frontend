@@ -1,5 +1,5 @@
-import { product } from "./productsStore";
+import { cartProductType } from "./specificTypes/cartProductType";
 
-export type cartProduct = product & {
-  quantity: number;
+export type cartProduct = cartProductType & {
+  cartItemId?: number | string;
 };

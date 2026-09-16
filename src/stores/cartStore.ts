@@ -1,11 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
 
 import { cartProductType } from "./specificTypes/cartProductType";
-import Cookies from "js-cookie";
 import { CartItem, UserCart } from "./specificTypes/userCartType";
 import { isUserLoggedIn } from "@/functions/credentials";
 import { getPriceAfterDiscount } from "@/functions/getPriceAfterDiscount";
 import { userCartProductType } from "./specificTypes/userCartProductType";
+import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class CartStore {
   productsCount: number = 0;
@@ -53,12 +53,11 @@ export class CartStore {
 
   getUserCartItems = async () => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/me?populate[cart][populate][cart_items][populate][product][populate]=*`,
+      `${STRAPI_ENDPOINT}/users/me?populate[cart][populate][cart_items][populate][product][populate]=*`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${Cookies.get("credentials")}`,
         },
       }
     )
@@ -191,7 +190,7 @@ export class CartStore {
 
     let sum = 0;
 
-    if (Cookies.get("credentials")) {
+    if (isUserLoggedIn()) {
       this.userCartItems.forEach((product) => {
         sum = sum + product.price * product.quantity;
       });

@@ -1,10 +1,11 @@
-import { isUserLoggedIn } from "@/functions/credentials";
+
 import { makeAutoObservable, runInAction } from "mobx";
 import { userCartProductType } from "./specificTypes/userCartProductType";
 import { OrderDetail } from "./specificTypes/orderAddressType";
 import { OrderDetails, OrderItems } from "./specificTypes/orderItemsType";
 import { UserOrderDetails } from "./specificTypes/userOrderDetailsType";
 import { Console } from "console";
+import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class OrdersStore {
   isCreatingOrderLoading: boolean = false;
@@ -30,12 +31,11 @@ export class OrdersStore {
     fullname: string;
   }) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/user-addresses`,
+      `${STRAPI_ENDPOINT}/user-addresses`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
         body: JSON.stringify({
           data: {
@@ -69,12 +69,11 @@ export class OrdersStore {
     orderDetailId: string | number
   ) => {
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/order-items`,
+      `${STRAPI_ENDPOINT}/order-items`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
         body: JSON.stringify({
           data: {
@@ -113,12 +112,11 @@ export class OrdersStore {
     orderItemsIds: string[];
   }) => {
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/order-details`,
+      `${STRAPI_ENDPOINT}/order-details`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
         body: JSON.stringify({
           data: {
@@ -159,12 +157,11 @@ export class OrdersStore {
 
   getOrderDetails = async (orderId: number | string) => {
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/order-details/${orderId}?populate=*`,
+      `${STRAPI_ENDPOINT}/order-details/${orderId}?populate=*`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     );
@@ -190,12 +187,11 @@ export class OrdersStore {
 
   getAllOrderItems = async (orderId: number | string) => {
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/order-details/${orderId}?[populate][order_items][populate][product][populate]=*`,
+      `${STRAPI_ENDPOINT}/order-details/${orderId}?[populate][order_items][populate][product][populate]=*`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     );
@@ -220,12 +216,11 @@ export class OrdersStore {
     userId: string | number
   ) => {
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/order-details/${orderId}?populate=*`,
+      `${STRAPI_ENDPOINT}/order-details/${orderId}?populate=*`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     );
@@ -247,12 +242,11 @@ export class OrdersStore {
 
   getUserOrders = async () => {
     let response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/me?[populate][order_details][populate][order_items][populate]=*&[populate][order_details][populate][user_order_address]=*`,
+      `${STRAPI_ENDPOINT}/users/me?[populate][order_details][populate][order_items][populate]=*&[populate][order_details][populate][user_order_address]=*`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     );
