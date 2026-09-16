@@ -28,14 +28,16 @@ const PaymentCallbackPage = () => {
         
         if (result.success) {
           setPaymentStatus("success");
-          
-          // Create order in your system
+
+          // Create order server-side (user, prices and totals are
+          // resolved from the JWT and the database — not the browser)
           const shippingData = JSON.parse(localStorage.getItem('shippingData') || '{}');
-          
-          const userOrderDetailData = {
-            totalPrice: cart.totalPrice,
-            userPaymentId: result.transactionId ?? null,
-            userId: String(user.strapiUserdata.id),
+
+          const orderData = await userOrders.checkout({
+            items: cart.userCartItems.map((item) => ({
+              id: item.id,
+              quantity: item.quantity,
+            })),
             orderNotes: `Paid via Paymob - Transaction ID: ${result.transactionId}. ${shippingData.notes || ''}`,
             orderAddress: {
               state: shippingData.state || "Cairo",
@@ -46,13 +48,9 @@ const PaymentCallbackPage = () => {
               phone: shippingData.phone || user.strapiUserdata.phone || "01000000000",
               second_phone: shippingData.second_phone || "",
             },
-            orderItemsIds: [],
-          };
+          });
 
-          const orderData = await userOrders.createNewOrder(userOrderDetailData);
-          
           if (orderData) {
-            await userOrders.createOrderItemsFromCart(cart.userCartItems, orderData.data.id);
             await user.clearUserCart(cart.userCartItems);
             
             setOrderCreated(true);

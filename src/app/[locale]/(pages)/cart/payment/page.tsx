@@ -119,10 +119,11 @@ const PaymentPage = () => {
         localStorage.getItem("shippingData") || "{}"
       );
 
-      const userOrderDetailData = {
-        totalPrice: cart.totalPrice,
-        userPaymentId: null, // No payment method for COD
-        userId: user.strapiUserdata.id.toString(),
+      const orderData = await userOrders.checkout({
+        items: cart.userCartItems.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+        })),
         orderNotes: "Cash on Delivery",
         orderAddress: {
           state: shippingData.state || "Cairo",
@@ -130,20 +131,12 @@ const PaymentPage = () => {
           city: shippingData.city || "Cairo",
           street: shippingData.street || "Street Address",
           postal_code: shippingData.postal_code || "12345",
-          phone:
-            shippingData.phone || user.strapiUserdata.username || "01000000000",
+          phone: shippingData.phone || user.strapiUserdata.username || "01000000000",
           second_phone: shippingData.second_phone || "",
         },
-        orderItemsIds: [],
-      };
-
-      const orderData = await userOrders.createNewOrder(userOrderDetailData);
+      });
 
       if (orderData) {
-        await userOrders.createOrderItemsFromCart(
-          cart.userCartItems,
-          orderData.data.id
-        );
         await user.clearUserCart(cart.userCartItems);
 
         // Clear shipping data from localStorage
@@ -154,7 +147,9 @@ const PaymentPage = () => {
             ? "تم إنشاء الطلب بنجاح"
             : "Order created successfully"
         );
-        router.push(`/cart/confirmation?order_number=${orderData.data.id}`);
+        router.push(
+          `/cart/confirmation?order_number=${orderData?.data?.id}`
+        );
       } else {
         throw new Error("Failed to create order");
       }
@@ -179,11 +174,12 @@ const PaymentPage = () => {
         localStorage.getItem("shippingData") || "{}"
       );
 
-      // Create order in your system
-      const userOrderDetailData = {
-        totalPrice: cart.totalPrice,
-        userPaymentId: transactionId,
-        userId: user.strapiUserdata.id.toString(),
+      // Create order in your system (server-owned checkout)
+      const orderData = await userOrders.checkout({
+        items: cart.userCartItems.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+        })),
         orderNotes: `Paid via Paymob - Transaction ID: ${transactionId}. Paymob Order ID: ${paymobOrderId}`,
         orderAddress: {
           state: shippingData.state,
@@ -194,16 +190,9 @@ const PaymentPage = () => {
           phone: shippingData.phone,
           second_phone: shippingData.second_phone,
         },
-        orderItemsIds: [],
-      };
-
-      const orderData = await userOrders.createNewOrder(userOrderDetailData);
+      });
 
       if (orderData) {
-        await userOrders.createOrderItemsFromCart(
-          cart.userCartItems,
-          orderData.data.id
-        );
         await user.clearUserCart(cart.userCartItems);
 
         // Clear shipping data from localStorage
@@ -212,7 +201,9 @@ const PaymentPage = () => {
         toast.success(
           locale === "ar" ? "تم الدفع بنجاح" : "Payment successful"
         );
-        router.push(`/cart/confirmation?order_number=${orderData.data.id}`);
+        router.push(
+          `/cart/confirmation?order_number=${orderData?.data?.id}`
+        );
       }
     } catch (error) {
       console.error("Order creation after payment error:", error);
