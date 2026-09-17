@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const STRAPI_API_ENDPOINT =
   process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT || "";
+const CONTACT_SHARED_SECRET = process.env.CONTACT_SHARED_SECRET || "";
 
 const MAX_NAME = 120;
 const MAX_EMAIL = 254;
@@ -112,6 +113,9 @@ export async function POST(req: NextRequest) {
         // the actual visitor address.
         "X-Forwarded-For": clientIp,
         "X-Real-IP": clientIp,
+        // Authenticate the forwarded headers so a direct caller of the
+        // Strapi endpoint cannot forge x-client-ip to bypass the limiter.
+        ...(CONTACT_SHARED_SECRET ? { "X-Contact-Secret": CONTACT_SHARED_SECRET } : {}),
       },
       body: JSON.stringify({ data: { name, email, message } }),
       cache: "no-store",
