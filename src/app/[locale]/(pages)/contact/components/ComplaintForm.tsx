@@ -1,7 +1,7 @@
 "use client";
 import { Button, Input, Textarea } from "@nextui-org/react";
 import { useTranslations } from "next-intl";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useScreenSize } from "react-screen-size-helper";
 import { toast, ToastContainer } from "react-toastify";
@@ -9,12 +9,27 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 const ComplaintForm = () => {
   const { currentWidth } = useScreenSize({});
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm<{ name: string; email: string; message: string }>();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const t = useTranslations("contactPage");
 
-  const submitcomplaint = () => {
-    toast(t("form.sended"));
+  const submitcomplaint = async (data: { name: string; email: string; message: string }) => {
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) throw new Error("Failed to submit");
+      toast.success(t("form.sended"));
+      reset();
+    } catch {
+      toast.error(t("form.error"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -30,7 +45,7 @@ const ComplaintForm = () => {
 
       <form
         onSubmit={handleSubmit((data) => {
-          submitcomplaint();
+          submitcomplaint(data);
         })}
         className="w-full flex flex-col gap-5"
       >
@@ -85,6 +100,7 @@ const ComplaintForm = () => {
           type="submit"
           size={currentWidth > 768 ? "lg" : "md"}
           className="bg-mainBlack text-mainWhite text-sm md:text-xl"
+          isLoading={isSubmitting}
         >
           {t("form.action")}
         </Button>

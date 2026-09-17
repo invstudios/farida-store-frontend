@@ -492,7 +492,8 @@
         "message": "Your message"
       },
       "action": "send",
-      "sended": "your complaint was send"
+      "sended": "your complaint was send",
+      "error": "Failed to send your message. Please try again."
     }
   },
   "userProfilePage": {
