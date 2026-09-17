@@ -13,7 +13,8 @@ import PaymentSummary from "./components/PaymentSummary";
 import { generateOrderId } from "@/utils/paymentValidation";
 
 const PaymentPage = () => {
-  const { cart, user, userOrders, payment } = useContext(StoreContext);
+  const { cart, user, userOrders, userAddresses, payment } =
+    useContext(StoreContext);
   const router = useRouter();
   const locale = useLocale();
   const t = useTranslations("paymentPage");
@@ -31,6 +32,21 @@ const PaymentPage = () => {
     }
   }, [cart.userCartItems.length, router, locale]);
 
+  // Resolve the shipping address reference set on the shipping page. Only
+  // a non-sensitive id travels in localStorage; personal data is read back
+  // from the server (owner-scoped) during checkout.
+  const getShippingAddress = async () => {
+    try {
+      const raw = localStorage.getItem("shippingAddressId") || "{}";
+      const { addressId } = JSON.parse(raw);
+      if (!addressId) return null;
+      const address = await userAddresses.getUserAddressById(addressId);
+      return address;
+    } catch (err) {
+      return null;
+    }
+  };
+
   // Handle payment method selection
   const handlePaymentMethodChange = (method: "card" | "cod") => {
     setSelectedPaymentMethod(method);
@@ -46,15 +62,21 @@ const PaymentPage = () => {
       return;
     }
 
+    const shippingData = await getShippingAddress();
+    if (!shippingData) {
+      toast.error(
+        locale === "ar"
+          ? "أدخل بيانات الشحن أولاً"
+          : "Please complete shipping data first"
+      );
+      return;
+    }
+
     setIsProcessingOrder(true);
 
     try {
-      // Get shipping data from localStorage
-      const shippingData = JSON.parse(
-        localStorage.getItem("shippingData") || "{}"
-      );
-
-      // Prepare payment data
+      // Prepare payment data. Address fields come from the server-stored
+      // record resolved by id — never from browser storage.
       const paymentData = {
         amount: cart.totalPrice,
         orderId: generateOrderId("FARIDA"),
@@ -65,9 +87,6 @@ const PaymentPage = () => {
           phone: shippingData.phone || user.strapiUserdata.username,
           phone_number: shippingData.phone || user.strapiUserdata.username,
           street: shippingData.street,
-          building: shippingData.building,
-          floor: shippingData.floor,
-          apartment: shippingData.apartment,
           city: shippingData.city,
           state: shippingData.state,
           country: shippingData.country,
@@ -110,51 +129,45 @@ const PaymentPage = () => {
       return;
     }
 
+    const shippingData = await getShippingAddress();
+    if (!shippingData) {
+      toast.error(
+        locale === "ar"
+          ? "أدخل بيانات الشحن أولاً"
+          : "Please complete shipping data first"
+      );
+      return;
+    }
+
     setIsProcessingOrder(true);
 
     try {
-      // Create order with COD payment method
-      // Get shipping data from localStorage
-      const shippingData = JSON.parse(
-        localStorage.getItem("shippingData") || "{}"
-      );
-
-      const userOrderDetailData = {
-        totalPrice: cart.totalPrice,
-        userPaymentId: null, // No payment method for COD
-        userId: user.strapiUserdata.id.toString(),
+      // Create order with COD payment method. The backend resolves the
+      // address by id and verifies ownership — no personal data is trusted
+      // from the browser.
+      const orderData = await userOrders.checkout({
+        items: cart.userCartItems.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+        })),
         orderNotes: "Cash on Delivery",
-        orderAddress: {
-          state: shippingData.state || "Cairo",
-          country: shippingData.country || "Egypt",
-          city: shippingData.city || "Cairo",
-          street: shippingData.street || "Street Address",
-          postal_code: shippingData.postal_code || "12345",
-          phone:
-            shippingData.phone || user.strapiUserdata.username || "01000000000",
-          second_phone: shippingData.second_phone || "",
-        },
-        orderItemsIds: [],
-      };
-
-      const orderData = await userOrders.createNewOrder(userOrderDetailData);
+        addressId: shippingData.id,
+      });
 
       if (orderData) {
-        await userOrders.createOrderItemsFromCart(
-          cart.userCartItems,
-          orderData.data.id
-        );
         await user.clearUserCart(cart.userCartItems);
 
-        // Clear shipping data from localStorage
-        localStorage.removeItem("shippingData");
+        // Shipping data was never stored as PII client-side; clear the ref
+        localStorage.removeItem("shippingAddressId");
 
         toast.success(
           locale === "ar"
             ? "تم إنشاء الطلب بنجاح"
             : "Order created successfully"
         );
-        router.push(`/cart/confirmation?order_number=${orderData.data.id}`);
+        router.push(
+          `/cart/confirmation?order_number=${orderData?.data?.id}`
+        );
       } else {
         throw new Error("Failed to create order");
       }
@@ -174,45 +187,31 @@ const PaymentPage = () => {
     paymobOrderId: string
   ) => {
     try {
-      // Get shipping data from localStorage
-      const shippingData = JSON.parse(
-        localStorage.getItem("shippingData") || "{}"
-      );
+      const shippingData = await getShippingAddress();
+      if (!shippingData) return;
 
-      // Create order in your system
-      const userOrderDetailData = {
-        totalPrice: cart.totalPrice,
-        userPaymentId: transactionId,
-        userId: user.strapiUserdata.id.toString(),
+      // Create order in your system (server-owned checkout)
+      const orderData = await userOrders.checkout({
+        items: cart.userCartItems.map((item) => ({
+          id: item.id,
+          quantity: item.quantity,
+        })),
         orderNotes: `Paid via Paymob - Transaction ID: ${transactionId}. Paymob Order ID: ${paymobOrderId}`,
-        orderAddress: {
-          state: shippingData.state,
-          country: shippingData.country,
-          city: shippingData.city,
-          street: shippingData.street,
-          postal_code: shippingData.postal_code,
-          phone: shippingData.phone,
-          second_phone: shippingData.second_phone,
-        },
-        orderItemsIds: [],
-      };
-
-      const orderData = await userOrders.createNewOrder(userOrderDetailData);
+        addressId: shippingData.id,
+      });
 
       if (orderData) {
-        await userOrders.createOrderItemsFromCart(
-          cart.userCartItems,
-          orderData.data.id
-        );
         await user.clearUserCart(cart.userCartItems);
 
-        // Clear shipping data from localStorage
-        localStorage.removeItem("shippingData");
+        // Clear the non-sensitive address reference
+        localStorage.removeItem("shippingAddressId");
 
         toast.success(
           locale === "ar" ? "تم الدفع بنجاح" : "Payment successful"
         );
-        router.push(`/cart/confirmation?order_number=${orderData.data.id}`);
+        router.push(
+          `/cart/confirmation?order_number=${orderData?.data?.id}`
+        );
       }
     } catch (error) {
       console.error("Order creation after payment error:", error);

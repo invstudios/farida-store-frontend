@@ -1,10 +1,8 @@
 
 import { makeAutoObservable, runInAction } from "mobx";
-import { userCartProductType } from "./specificTypes/userCartProductType";
 import { OrderDetail } from "./specificTypes/orderAddressType";
 import { OrderDetails, OrderItems } from "./specificTypes/orderItemsType";
 import { UserOrderDetails } from "./specificTypes/userOrderDetailsType";
-import { Console } from "console";
 import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class OrdersStore {
@@ -63,96 +61,67 @@ export class OrdersStore {
 
   addNewUserPaymentMethod = async () => {};
 
-  createNewOrderItem = async (
-    productId: string | number,
-    quantity: number,
-    orderDetailId: string | number
-  ) => {
-    let response = await fetch(
-      `${STRAPI_ENDPOINT}/order-items`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: {
-            order_detail: orderDetailId,
-            product: productId,
-            quantity: quantity,
-          },
-        }),
-      }
-    );
-
-    if (response.ok) {
-      let data = await response.json();
-
-      return data;
-    } else {
-      return null;
-    }
-  };
-
-  createNewOrder = async (newOrderData: {
-    totalPrice: number;
-    userPaymentId: string | null;
-    userId: string | null;
-
-    orderNotes: string | null;
-    orderAddress: {
-      state: string;
-      country: string;
-      city: string;
-      street: string;
-      postal_code: string;
-      phone: string;
-      second_phone: string;
-    };
-    orderItemsIds: string[];
+  // Persist the shipping address server-side (owner-scoped). Only the
+  // returned record id is kept client-side; personal data stays on the server.
+  saveUserAddress = async (data: {
+    street: string;
+    state: string;
+    city: string;
+    country: string;
+    postal_code: string;
+    phone: string;
+    second_phone: string;
+    userId: string;
   }) => {
-    let response = await fetch(
-      `${STRAPI_ENDPOINT}/order-details`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    const response = await fetch(`${STRAPI_ENDPOINT}/user-addresses`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: {
+          street: data.street,
+          state: data.state,
+          city: data.city,
+          country: data.country,
+          postal_code: data.postal_code,
+          phone: data.phone,
+          second_phone: data.second_phone,
+          user: data.userId,
         },
-        body: JSON.stringify({
-          data: {
-            total: newOrderData.totalPrice,
-            user_payment: newOrderData.userPaymentId,
-            user: newOrderData.userId,
-            order_notes: newOrderData.orderNotes,
-            state: newOrderData.orderAddress.state,
-            country: newOrderData.orderAddress.country,
-            city: newOrderData.orderAddress.city,
-            street: newOrderData.orderAddress.street,
-            postal_code: newOrderData.orderAddress.postal_code,
-            phone: newOrderData.orderAddress.phone,
-            second_phone: newOrderData.orderAddress.second_phone,
-            order_items: newOrderData.orderItemsIds,
-          },
-        }),
-      }
-    );
+      }),
+    });
 
     if (response.ok) {
-      let data = await response.json();
+      return await response.json();
+    }
+    return null;
+  };
 
-      return data;
+  // Server-owned checkout: the backend derives the user from the JWT,
+  // recomputes prices and totals from the database and writes the order
+  // with its items atomically. The client only sends product ids and
+  // quantities plus a reference to a server-stored address — never
+  // totalPrice, userId or personal shipping data.
+  checkout = async (data: {
+    items: Array<{ id: number | string; quantity: number }>;
+    addressId: number | string;
+    orderNotes: string;
+  }) => {
+    let response = await fetch(`${STRAPI_ENDPOINT}/order-details/checkout`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      let responseData = await response.json();
+      return responseData;
     } else {
       return null;
     }
-  };
-
-  createOrderItemsFromCart = async (
-    cartItems: userCartProductType[],
-    orderDetailId: number | string
-  ) => {
-    cartItems.forEach((item) => {
-      this.createNewOrderItem(item.id, item.quantity, orderDetailId).then();
-    });
   };
 
   getOrderDetails = async (orderId: number | string) => {
