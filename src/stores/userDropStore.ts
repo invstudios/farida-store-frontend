@@ -1,7 +1,5 @@
 "use client";
 
-import { auth } from "@/firebase/auth";
-import { signInWithEmailAndPassword } from "firebase/auth";
 import { makeAutoObservable } from "mobx";
 
 export class UserDropStore {
@@ -45,25 +43,5 @@ export class UserDropStore {
 
   setPasswordFocus = (value: boolean) => {
     this.passwordInputFocus = value;
-  };
-
-  login = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    e.preventDefault();
-
-    this.isLoading = true;
-    this.errorMessage = "";
-    return signInWithEmailAndPassword(
-      auth,
-      this.emailInputValue,
-      this.passwordInputValue
-    )
-      .then((userCredential) => {
-        this.isLoading = false;
-        // router.push("/");
-      })
-      .catch((err) => {
-        this.errorMessage = err.message;
-        this.isLoading = false;
-      });
   };
 }

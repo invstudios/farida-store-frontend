@@ -8,8 +8,6 @@ import { IoBagOutline } from "react-icons/io5";
 import { FaArrowRight } from "react-icons/fa";
 import { Link } from "@/navigation";
 import { RiUserSettingsLine } from "react-icons/ri";
-import { signOut } from "firebase/auth";
-import { auth } from "@/firebase/auth";
 import { useRouter } from "@/navigation";
 import { useTranslations } from "next-intl";
 

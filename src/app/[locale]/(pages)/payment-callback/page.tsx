@@ -34,8 +34,8 @@ const PaymentCallbackPage = () => {
           
           const userOrderDetailData = {
             totalPrice: cart.totalPrice,
-            userPaymentId: result.transactionId,
-            userId: user.strapiUserdata.id,
+            userPaymentId: result.transactionId ?? null,
+            userId: String(user.strapiUserdata.id),
             orderNotes: `Paid via Paymob - Transaction ID: ${result.transactionId}. ${shippingData.notes || ''}`,
             orderAddress: {
               state: shippingData.state || "Cairo",

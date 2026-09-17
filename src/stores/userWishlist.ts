@@ -1,10 +1,11 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { userCartProductType } from "./specificTypes/userCartProductType";
-import { isUserLoggedIn } from "@/functions/credentials";
+
 import { UserWishlist, WishlistItem } from "./specificTypes/userWishlistType";
 import { getPriceAfterDiscount } from "@/functions/getPriceAfterDiscount";
 import { userWishlistProductType } from "./specificTypes/wishlistProductType";
 import { getAverageRatings } from "@/functions/getAverageRatings";
+import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class userWishListStore {
   userWishlist: UserWishlist = {} as UserWishlist;
@@ -17,12 +18,11 @@ export class userWishListStore {
 
   getUserWishlistItems = async () => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/users/me?populate[wishlist][populate][wishlist_items][populate][product][populate]=*`,
+      `${STRAPI_ENDPOINT}/users/me?populate[wishlist][populate][wishlist_items][populate][product][populate]=*`,
       {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     )
@@ -148,12 +148,11 @@ export class userWishListStore {
 
   addProductToUserWishlist = async (productId: string | number) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/wishlist-items`,
+      `${STRAPI_ENDPOINT}/wishlist-items`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
         body: JSON.stringify({
           data: {
@@ -174,12 +173,11 @@ export class userWishListStore {
     const wishlistItem = this.isFoundedInWishList(productId);
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/wishlist-items/${wishlistItem?.wishlistItemId}`,
+      `${STRAPI_ENDPOINT}/wishlist-items/${wishlistItem?.wishlistItemId}`,
       {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${isUserLoggedIn()}`,
         },
       }
     );

@@ -6,6 +6,7 @@ import {
 } from "./specificTypes/strapiProductType";
 import { PopulatedReview } from "./specificTypes/targetProductReviewsType";
 import { ProductArabicData } from "./specificTypes/productArabicDataType";
+import { STRAPI_ENDPOINT } from "@/api/config";
 // import { ProductArabicData } from "./specificTypes/productArabicDataType";
 
 export type Pagination = {
@@ -36,7 +37,6 @@ export class ProductsStore {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: process.env.NEXT_PUBLIC_STRAPI_API_TOKEN ?? "",
     },
   };
 
@@ -56,7 +56,7 @@ export class ProductsStore {
     });
 
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*&pagination[page]=${this.pagination.page}&pagination[pageSize]=${this.pagination.pageSize}`,
+      `${STRAPI_ENDPOINT}/products?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*&pagination[page]=${this.pagination.page}&pagination[pageSize]=${this.pagination.pageSize}`,
       this.getMethodOptions
     )
       .then((res) => res.json())
@@ -72,7 +72,7 @@ export class ProductsStore {
 
   getSingleProduct = async (productId: string) => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/${productId}?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*`,
+      `${STRAPI_ENDPOINT}/products/${productId}?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*`,
       this.getMethodOptions
     )
       .then((res) => res.json())
@@ -90,7 +90,7 @@ export class ProductsStore {
   getTargetProductArabicData = async (productId: string) => {
     try {
       let response = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/${productId}?populate[localizations]=*`,
+        `${STRAPI_ENDPOINT}/products/${productId}?populate[localizations]=*`,
         this.getMethodOptions
       );
 
@@ -117,7 +117,7 @@ export class ProductsStore {
   getTargetProductsReviews = async (productId: string) => {
     try {
       let response = await fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/${productId}?populate[reviews][populate]=*`,
+        `${STRAPI_ENDPOINT}/products/${productId}?populate[reviews][populate]=*`,
         this.getMethodOptions
       );
 
@@ -149,7 +149,7 @@ export class ProductsStore {
 
   getBestSellerProducts = async () => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*&filters[type][$eq]=best_seller&pagination[page]=${this.pagination.page}&pagination[pageSize]=${this.pagination.pageSize}`,
+      `${STRAPI_ENDPOINT}/products/?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*&filters[type][$eq]=best_seller&pagination[page]=${this.pagination.page}&pagination[pageSize]=${this.pagination.pageSize}`,
       this.getMethodOptions
     )
       .then((res) => res.json())
@@ -164,7 +164,7 @@ export class ProductsStore {
 
   getSaleProducts = async () => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*&filters[type][$eq]=sale&pagination[page]=${this.pagination.page}&pagination[pageSize]=${this.pagination.pageSize}`,
+      `${STRAPI_ENDPOINT}/products/?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*&filters[type][$eq]=sale&pagination[page]=${this.pagination.page}&pagination[pageSize]=${this.pagination.pageSize}`,
       this.getMethodOptions
     )
       .then((res) => res.json())
@@ -179,7 +179,7 @@ export class ProductsStore {
 
   getDealProducts = async () => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*&filters[type][$eq]=deal&pagination[page]=${this.pagination.page}&pagination[pageSize]=${this.pagination.pageSize}`,
+      `${STRAPI_ENDPOINT}/products/?populate[images]=*&populate[thumbnail]=*&populate[category]=*&populate[reviews]=*&populate[discount]=*&populate[localizations]=*&populate[product_inventory]=*&populate[sizes]=*&populate[colors]=*&filters[type][$eq]=deal&pagination[page]=${this.pagination.page}&pagination[pageSize]=${this.pagination.pageSize}`,
       this.getMethodOptions
     )
       .then((res) => res.json())
@@ -224,7 +224,7 @@ export class ProductsStore {
         [key: string]: string | number | undefined;
       }
 
-      const endpoint = `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/`;
+      const endpoint = `${STRAPI_ENDPOINT}/products/`;
 
       const queryParams: QueryParams = {
         "populate[images]": "*",
@@ -302,9 +302,9 @@ export class ProductsStore {
           return `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`;
         });
 
-      // Join populate with first filter without &, then add other params with &
+      // Join populate with first filter with &, then add other params with &
       const queryString = otherParams.length > 0
-        ? populateParams + otherParams[0] + (otherParams.length > 1 ? "&" + otherParams.slice(1).join("&") : "")
+        ? populateParams + "&" + otherParams[0] + (otherParams.length > 1 ? "&" + otherParams.slice(1).join("&") : "")
         : populateParams;
 
       const url = `${endpoint}?${queryString}`;
@@ -337,7 +337,7 @@ export class ProductsStore {
         [key: string]: string | number | undefined;
       }
 
-      const endpoint = `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/`;
+      const endpoint = `${STRAPI_ENDPOINT}/products/`;
 
       const queryParams: QueryParams = {
         "populate[images]": "*",
@@ -411,9 +411,9 @@ export class ProductsStore {
           return `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`;
         });
 
-      // Join populate with first filter without &, then add other params with &
+      // Join populate with first filter with &, then add other params with &
       const queryString = otherParams.length > 0
-        ? populateParams + otherParams[0] + (otherParams.length > 1 ? "&" + otherParams.slice(1).join("&") : "")
+        ? populateParams + "&" + otherParams[0] + (otherParams.length > 1 ? "&" + otherParams.slice(1).join("&") : "")
         : populateParams;
 
       const url = `${endpoint}?${queryString}`;
@@ -485,7 +485,7 @@ export class ProductsStore {
       [key: string]: string | number | undefined;
     }
 
-    const endpoint = `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/`;
+    const endpoint = `${STRAPI_ENDPOINT}/products/`;
 
     const queryParams: QueryParams = {
       "populate[images]": "*",
@@ -531,10 +531,10 @@ export class ProductsStore {
         return `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`;
       });
 
-    // Join populate with first filter without &, then add other params with &
-    const queryString = otherParams.length > 0
-      ? populateParams + otherParams[0] + (otherParams.length > 1 ? "&" + otherParams.slice(1).join("&") : "")
-      : populateParams;
+// Join populate with first filter with &, then add other params with &
+      const queryString = otherParams.length > 0
+        ? populateParams + "&" + otherParams[0] + (otherParams.length > 1 ? "&" + otherParams.slice(1).join("&") : "")
+        : populateParams;
 
     const url = `${endpoint}?${queryString}`;
 

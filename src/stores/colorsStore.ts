@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { color } from "./specificTypes/colorType";
 import { ArabicColorDataType } from "./specificTypes/arabicColorDataType";
+import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class ColorsStore {
   colors: color[] = [];
@@ -10,7 +11,6 @@ export class ColorsStore {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: process.env.NEXT_PUBLIC_STRAPI_API_TOKEN ?? "",
     },
   };
 
@@ -20,7 +20,7 @@ export class ColorsStore {
 
   getAllColors = async () => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/colors?populate=*`,
+      `${STRAPI_ENDPOINT}/colors?populate=*`,
       this.getOptions
     )
       .then((res) => res.json())
@@ -34,7 +34,7 @@ export class ColorsStore {
 
   getArabicColor = async (color: string) => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/colors?populate=localizations&filters[$and][0][name][$eq]=${color}`,
+      `${STRAPI_ENDPOINT}/colors?populate=localizations&filters[$and][0][name][$eq]=${color}`,
       this.getOptions
     )
       .then((res) => res.json())

@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Advertise } from "./specificTypes/advertiseType";
 import { MiniAdType } from "./specificTypes/miniAdType";
+import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class AdsSliderStore {
   ads: Advertise[] = [];
@@ -10,7 +11,6 @@ export class AdsSliderStore {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: process.env.NEXT_PUBLIC_STRAPI_API_TOKEN ?? "",
     },
   };
 
@@ -20,7 +20,7 @@ export class AdsSliderStore {
 
   getAllAds = async (locale: string) => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/advertises?populate=*&locale=${locale}`,
+      `${STRAPI_ENDPOINT}/advertises?populate=*&locale=${locale}`,
       this.getOptions
     )
       .then((res) => res.json())
@@ -35,7 +35,7 @@ export class AdsSliderStore {
 
   getAllMiniAds = async (locale: string) => {
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/mini-ads?populate=*&locale=${locale}`,
+      `${STRAPI_ENDPOINT}/mini-ads?populate=*&locale=${locale}`,
       this.getOptions
     )
       .then((res) => res.json())

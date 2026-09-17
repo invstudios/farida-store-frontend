@@ -28,7 +28,7 @@ type productRow = {
 
 const ProductsTable = () => {
   const { cart, user } = useContext(StoreContext);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const rows = useMemo(() => {
     if (isUserLoggedIn()) {
@@ -44,7 +44,7 @@ const ProductsTable = () => {
             />
           ),
           price: `${product.price}$`,
-          quantity: <QuantityCounter product={product} />,
+          quantity: <QuantityCounter product={product} settingLoading={setIsLoading} />,
           total: (
             <TotalSingleCartProductPrice
               totalPrice={product.price * product.quantity}
@@ -78,7 +78,7 @@ const ProductsTable = () => {
             />
           ),
           price: `${product.price}$`,
-          quantity: <QuantityCounter product={product} />,
+          quantity: <QuantityCounter product={product} settingLoading={setIsLoading} />,
           total: (
             <TotalSingleCartProductPrice
               totalPrice={product.price * product.quantity}

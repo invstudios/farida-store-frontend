@@ -1,5 +1,6 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { strapiProductType } from "./specificTypes/strapiProductType";
+import { STRAPI_ENDPOINT } from "@/api/config";
 
 export class SearchBoxStore {
   showBackdrop: boolean = false;
@@ -14,7 +15,6 @@ export class SearchBoxStore {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: process.env.NEXT_PUBLIC_STRAPI_API_TOKEN ?? "",
     },
   };
 
@@ -60,7 +60,7 @@ export class SearchBoxStore {
     });
 
     await fetch(
-      `${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/products/?populate=*&pagination[page]=1&pagination[pageSize]=4&filters[$or][0][title][$contains]=${searchQuery}&filters[$or][1][description][$contains]=${searchQuery}&filters[$or][2][category][name][$contains]=${searchQuery}&filters[$or][3][colors][name][$contains]=${searchQuery}&filters[$or][4][localizations][title][$contains]=${searchQuery}&filters[$or][5][localizations][description][$contains]=${searchQuery}`,
+      `${STRAPI_ENDPOINT}/products/?populate=*&pagination[page]=1&pagination[pageSize]=4&filters[$or][0][title][$contains]=${searchQuery}&filters[$or][1][description][$contains]=${searchQuery}&filters[$or][2][category][name][$contains]=${searchQuery}&filters[$or][3][colors][name][$contains]=${searchQuery}&filters[$or][4][localizations][title][$contains]=${searchQuery}&filters[$or][5][localizations][description][$contains]=${searchQuery}`,
       this.getMethodOptions
     )
       .then((res) => res.json())

@@ -1,7 +1,6 @@
-import { auth } from "@/firebase/auth";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import Cookies from "js-cookie";
 import { makeAutoObservable, runInAction } from "mobx";
+import { STRAPI_ENDPOINT } from "@/api/config";
+import { createSession } from "@/functions/credentials";
 
 export class LoginFormStore {
   email: string = "";
@@ -27,27 +26,13 @@ export class LoginFormStore {
     }
   }
 
-  firebaseLoginWithEmailAndPass = () => {
-    if (
-      this.isValidEmail &&
-      this.email.length > 0 &&
-      this.password.length > 5
-    ) {
-      runInAction(() => {
-        this.isLoading = true;
-      });
-
-      return signInWithEmailAndPassword(auth, this.email, this.password);
-    }
-  };
-
   strapiLogin = async () => {
     runInAction(() => {
       this.isLoading = true;
       this.errorMessage = "";
     });
 
-    await fetch(`${process.env.NEXT_PUBLIC_STRAPI_API_ENDPOINT}/auth/local`, {
+    await fetch(`${STRAPI_ENDPOINT}/auth/local`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,10 +43,13 @@ export class LoginFormStore {
       }),
     })
       .then((res) => res.json())
-      .then((data) => {
-
+      .then(async (data) => {
         if (data.jwt) {
-          Cookies.set("credentials", data.jwt);
+          await createSession(data.jwt);
+          runInAction(() => {
+            this.isLoading = false;
+          });
+          return;
         }
         //  this.products = data.data;
         //  this.pagination = data.meta.pagination;

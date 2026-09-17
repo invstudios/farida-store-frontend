@@ -20,6 +20,7 @@ const QuantityCounter = ({ product, settingLoading }: quantityCounterProps) => {
     setCounter((c) => Number(c) + 1);
 
     if (isUserLoggedIn()) {
+      if (product.cartItemId === undefined) return;
       settingLoading(true);
       user
         .updateUserCartProductQuantity(product.cartItemId, Number(counter) + 1)
@@ -39,6 +40,7 @@ const QuantityCounter = ({ product, settingLoading }: quantityCounterProps) => {
     if (counter > 1) {
       setCounter((c) => c - 1);
       if (isUserLoggedIn()) {
+        if (product.cartItemId === undefined) return;
         settingLoading(true);
         user
           .updateUserCartProductQuantity(product.cartItemId, counter - 1)

@@ -16,7 +16,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import GoTopFloatingButton from "@/components/GoTopFloatingButton";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import { unstable_setRequestLocale } from "next-intl/server";
-import Uiproviders from "@/providers/Uiproviders";
+import Uiproviders from "@/providers/UiProviders";
 
 export const metadata = {
   title: "Farida Store",
