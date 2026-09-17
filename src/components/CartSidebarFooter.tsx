@@ -7,10 +7,12 @@ import React, { useContext, useEffect, useState } from "react";
 import ConfirmMergeCart from "./ConfirmMergeCart";
 import { isUserLoggedIn } from "@/functions/credentials";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/useAuth";
 
 const CartSidebarFooter = () => {
   const { cartSidebar, cart, user, loginForm, registerForm } =
     useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
 
   const router = useRouter();
   const t = useTranslations("cartSidebar");
@@ -36,7 +38,7 @@ const CartSidebarFooter = () => {
   return (
     <div>
       <Divider />
-      {isUserLoggedIn() &&
+      {isLoggedIn &&
         cartSidebar.isLocalCartHasItems &&
         !user.isMergingOrRemovingLoading && <ConfirmMergeCart />}
       <div className="p-5 flex flex-col gap-5">

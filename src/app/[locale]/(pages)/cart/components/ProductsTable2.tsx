@@ -6,16 +6,17 @@ import CartTableProduct from "./CartTableProduct";
 import CartTableHeader from "./CartTableHeader";
 import { Divider } from "@nextui-org/react";
 import LoadingOverlay from "@/components/LoadingOverlay";
-import { isUserLoggedIn } from "@/functions/credentials";
+import { useAuth } from "@/hooks/useAuth";
 
 const ProductsTable2 = () => {
   const { cart, user } = useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
 
   return (
     <div className="relative flex flex-col gap-5  pt-4">
       <CartTableHeader />
 
-      {isUserLoggedIn()
+      {isLoggedIn
         ? cart.userCartItems.map((item) => (
             <div key={item.id} className="flex flex-col gap-2">
               <CartTableProduct product={item} />
