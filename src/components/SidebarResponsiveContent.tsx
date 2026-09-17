@@ -16,12 +16,13 @@ import { FaBackwardStep } from "react-icons/fa6";
 import { BsBack, BsBackspace } from "react-icons/bs";
 import { BiLeftArrow } from "react-icons/bi";
 import { MoveLeft } from "lucide-react";
-import { isUserLoggedIn } from "@/functions/credentials";
 import UserSidebarMenu from "./UserSidebarMenu";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/useAuth";
 
 const SidebarResponsiveContent = () => {
   const { sidebar, categories, user } = useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
   const tSidebar = useTranslations("sidebar");
   const tNavbar = useTranslations("navbar");
   const locale = useLocale();
@@ -147,7 +148,7 @@ const SidebarResponsiveContent = () => {
               </Link>
             ))}
           </div>
-          {isUserLoggedIn() && <UserSidebarMenu />}
+          {isLoggedIn && <UserSidebarMenu />}
         </>
       )}
     </div>

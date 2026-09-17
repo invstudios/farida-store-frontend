@@ -11,11 +11,12 @@ import CartDropTotalPrice from "./CartDropTotalPrice";
 import { Divider } from "@nextui-org/react";
 import LoadingOverlay from "./LoadingOverlay";
 import ConfirmMergeCart from "./ConfirmMergeCart";
-import { isUserLoggedIn } from "@/functions/credentials";
 import { useLocale, useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/useAuth";
 
 const CartDrop2 = () => {
   const { cart, user, cartSidebar } = useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
 
   const locale = useLocale();
   const t = useTranslations("cartDrop");
@@ -47,7 +48,7 @@ const CartDrop2 = () => {
         {cart.productsCount > 0 && (
           <>
             <Divider />
-            {isUserLoggedIn() &&
+            {isLoggedIn &&
               cartSidebar.isLocalCartHasItems &&
               !user.isMergingOrRemovingLoading && <ConfirmMergeCart />}
             <CartDropTotalPrice />

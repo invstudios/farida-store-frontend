@@ -7,6 +7,7 @@ import { useLocale } from "next-intl";
 
 const GoTopFloatingButton = () => {
   const [screenScrollY, setScreenScrollY] = useState(0);
+  const [pageHeight, setPageHeight] = useState(1000);
   const { isTablet, isMobile } = useScreenSize({});
   const locale = useLocale();
   const goTop = () => {
@@ -25,6 +26,12 @@ const GoTopFloatingButton = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (typeof document !== "undefined") {
+      setPageHeight(document.body.offsetHeight);
+    }
+  }, []);
+
   return (
     <motion.div
       initial={{
@@ -39,7 +46,7 @@ const GoTopFloatingButton = () => {
       }}
       animate={{
         x:
-          screenScrollY > (1 / 2) * (typeof window !== 'undefined' ? document.body.offsetHeight : 1000)
+          screenScrollY > (1 / 2) * pageHeight
             ? 0
             : isTablet || isMobile
             ? locale === "en"

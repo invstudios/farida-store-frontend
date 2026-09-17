@@ -3,13 +3,14 @@ import { FaBagShopping } from "react-icons/fa6";
 import React, { useContext } from "react";
 import { useRouter } from "@/navigation";
 import ConfirmMergeCart from "@/components/ConfirmMergeCart";
-import { isUserLoggedIn } from "@/functions/credentials";
 import { StoreContext } from "@/contexts/StoreContext";
 import { observer } from "mobx-react-lite";
 import { useTranslations } from "next-intl";
+import { useAuth } from "@/hooks/useAuth";
 
 const EmptyCart = () => {
   const { cartSidebar, user } = useContext(StoreContext);
+  const { isLoggedIn } = useAuth();
   const t = useTranslations("cartPage");
   const router = useRouter();
 
@@ -36,7 +37,7 @@ const EmptyCart = () => {
         </button>
       </div>
 
-      {isUserLoggedIn() &&
+      {isLoggedIn &&
         cartSidebar.isLocalCartHasItems &&
         !user.isMergingOrRemovingLoading && (
           <div className="px-0 md:px-32">
