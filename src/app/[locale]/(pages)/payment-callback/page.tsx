@@ -30,34 +30,38 @@ const PaymentCallbackPage = () => {
           setPaymentStatus("success");
 
           // Create order server-side (user, prices and totals are
-          // resolved from the JWT and the database — not the browser)
-          const shippingData = JSON.parse(localStorage.getItem('shippingData') || '{}');
+          // resolved from the JWT and the database — not the browser).
+          // The address is resolved by id from the server-stored record.
+          let addressId: number | string | null = null;
+          try {
+            const raw =
+              localStorage.getItem("shippingAddressId") || "{}";
+            addressId = JSON.parse(raw).addressId || null;
+          } catch (err) {
+            addressId = null;
+          }
+
+          if (!addressId) {
+            throw new Error("Shipping address reference is missing");
+          }
 
           const orderData = await userOrders.checkout({
             items: cart.userCartItems.map((item) => ({
               id: item.id,
               quantity: item.quantity,
             })),
-            orderNotes: `Paid via Paymob - Transaction ID: ${result.transactionId}. ${shippingData.notes || ''}`,
-            orderAddress: {
-              state: shippingData.state || "Cairo",
-              country: shippingData.country || "Egypt",
-              city: shippingData.city || "Cairo",
-              street: shippingData.street || "Street Address",
-              postal_code: shippingData.postal_code || "12345",
-              phone: shippingData.phone || user.strapiUserdata.phone || "01000000000",
-              second_phone: shippingData.second_phone || "",
-            },
+            orderNotes: `Paid via Paymob - Transaction ID: ${result.transactionId}.`,
+            addressId,
           });
 
           if (orderData) {
             await user.clearUserCart(cart.userCartItems);
-            
+
             setOrderCreated(true);
-            localStorage.removeItem('shippingData');
-            
+            localStorage.removeItem("shippingAddressId");
+
             toast.success(locale === "ar" ? "تم الدفع بنجاح" : "Payment successful");
-            
+
             // Redirect to confirmation page after 3 seconds
             setTimeout(() => {
               router.push(`/cart/confirmation?order_number=${orderData.data.id}`);

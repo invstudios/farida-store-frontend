@@ -79,12 +79,12 @@ interface PaymobOrderData {
     quantity: number;
   }>;
   shipping_data: {
-    apartment: string;
+    apartment?: string;
     email: string;
-    floor: string;
+    floor?: string;
     first_name: string;
     street: string;
-    building: string;
+    building?: string;
     phone_number: string;
     postal_code: string;
     extra_description: string;
@@ -101,12 +101,12 @@ interface PaymentKeyData {
   expiration: number;
   order_id: number;
   billing_data: {
-    apartment: string;
+    apartment?: string;
     email: string;
-    floor: string;
+    floor?: string;
     first_name: string;
     street: string;
-    building: string;
+    building?: string;
     phone_number: string;
     shipping_method: string;
     postal_code: string;
@@ -213,9 +213,9 @@ class PaymobService {
       email: string;
       phone: string;
       street: string;
-      building: string;
-      floor: string;
-      apartment: string;
+      building?: string;
+      floor?: string;
+      apartment?: string;
       city: string;
       state: string;
       country: string;

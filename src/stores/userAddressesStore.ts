@@ -39,6 +39,26 @@ export class UserAddressesStore {
     }
   };
 
+  // Resolve a single address from the server (owner-safe, via /users/me)
+  // instead of trusting personal data stored in the browser.
+  getUserAddressById = async (
+    addressId: number | string
+  ): Promise<UserAddressType | null> => {
+    await this.getAllUserAddresses();
+
+    const address = this.userAddresses.find(
+      (item) => item.id.toString() === addressId.toString()
+    );
+
+    if (address) {
+      runInAction(() => {
+        this.selectedUserAddress = address;
+      });
+      return address;
+    }
+    return null;
+  };
+
   deleteUserAddress = async (addressId: number | string) => {
     runInAction(() => {
       this.isLoading = true;

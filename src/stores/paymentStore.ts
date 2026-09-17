@@ -19,9 +19,9 @@ export interface PaymentData {
     email: string;
     phone: string;
     street: string;
-    building: string;
-    floor: string;
-    apartment: string;
+    building?: string;
+    floor?: string;
+    apartment?: string;
     city: string;
     state: string;
     country: string;

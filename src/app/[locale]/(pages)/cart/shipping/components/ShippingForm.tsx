@@ -41,24 +41,44 @@ const ShippingForm = () => {
     setValue("postal", userAddresses.selectedUserAddress.postal_code);
   };
 
-  const submitForm = (data: FieldValues) => {
-    // Store shipping data in localStorage for payment page
+  const submitForm = async (data: FieldValues) => {
+    if (!user.strapiUserdata?.id) {
+      toast.error(t("details.form.errors.login"));
+      return;
+    }
     const shippingData = {
-      phone: data.phone,
-      second_phone: data.second_phone,
+      street: data.street,
       state: data.state,
       country: data.country,
       city: data.city,
-      street: data.street,
       postal_code: data.postal,
-      notes: data.notes,
+      phone: data.phone,
+      second_phone: data.second_phone,
     };
 
-    localStorage.setItem('shippingData', JSON.stringify(shippingData));
+    try {
+      const savedAddress = await userOrders.saveUserAddress({
+        ...shippingData,
+        userId: user.strapiUserdata.id.toString(),
+      });
 
-    // Navigate to payment page
+      if (!savedAddress?.data?.id) {
+        toast.error(t("details.form.errors.save"));
+        return;
+      }
+
+      // Only a non-sensitive address reference is kept client-side; the
+      // personal data itself is stored and owned server-side.
+      localStorage.setItem(
+        "shippingAddressId",
+        JSON.stringify({ addressId: savedAddress.data.id })
+      );
+    } catch (err) {
+      toast.error(t("details.form.errors.save"));
+      return;
+    }
+
     goToPaymentPage();
-
     reset();
   };
 

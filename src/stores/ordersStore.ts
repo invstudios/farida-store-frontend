@@ -61,21 +61,51 @@ export class OrdersStore {
 
   addNewUserPaymentMethod = async () => {};
 
+  // Persist the shipping address server-side (owner-scoped). Only the
+  // returned record id is kept client-side; personal data stays on the server.
+  saveUserAddress = async (data: {
+    street: string;
+    state: string;
+    city: string;
+    country: string;
+    postal_code: string;
+    phone: string;
+    second_phone: string;
+    userId: string;
+  }) => {
+    const response = await fetch(`${STRAPI_ENDPOINT}/user-addresses`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        data: {
+          street: data.street,
+          state: data.state,
+          city: data.city,
+          country: data.country,
+          postal_code: data.postal_code,
+          phone: data.phone,
+          second_phone: data.second_phone,
+          user: data.userId,
+        },
+      }),
+    });
+
+    if (response.ok) {
+      return await response.json();
+    }
+    return null;
+  };
+
   // Server-owned checkout: the backend derives the user from the JWT,
   // recomputes prices and totals from the database and writes the order
   // with its items atomically. The client only sends product ids and
-  // quantities — never totalPrice or userId.
+  // quantities plus a reference to a server-stored address — never
+  // totalPrice, userId or personal shipping data.
   checkout = async (data: {
     items: Array<{ id: number | string; quantity: number }>;
-    orderAddress: {
-      state: string;
-      country: string;
-      city: string;
-      street: string;
-      postal_code: string;
-      phone: string;
-      second_phone: string;
-    };
+    addressId: number | string;
     orderNotes: string;
   }) => {
     let response = await fetch(`${STRAPI_ENDPOINT}/order-details/checkout`, {
