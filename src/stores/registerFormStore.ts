@@ -51,87 +51,122 @@ export class RegisterFormStore {
       this.errorMessage = "";
     });
 
-    await fetch(
-      `${STRAPI_ENDPOINT}/auth/local/register`,
-      {
+    let userId: number | string = "";
+
+    try {
+      const response = await fetch(
+        `${STRAPI_ENDPOINT}/auth/local/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: this.username,
+            email: this.email,
+            password: this.password,
+            first_name: this.firstName,
+            last_name: this.lastName,
+          }),
+        }
+      );
+      const data = await response.json();
+
+      if (!data.jwt) {
+        runInAction(() => {
+          this.isLoading = false;
+          this.errorMessage = data.error?.message || "Registration failed";
+        });
+        return;
+      }
+
+      userId = data.user.id;
+      await createSession(data.jwt);
+
+      const [cartCreated, wishlistCreated] = await Promise.all([
+        this.createUserCart(userId),
+        this.createUserWishlist(userId),
+      ]);
+
+      runInAction(() => {
+        this.isLoading = false;
+        if (!cartCreated || !wishlistCreated) {
+          this.errorMessage =
+            "Account created, but we could not initialize your cart or wishlist. You can still use the site; your cart will be created on your first order attempt.";
+        }
+      });
+    } catch (err) {
+      runInAction(() => {
+        this.isLoading = false;
+        this.errorMessage = "Something went wrong. Please try again.";
+      });
+    }
+  };
+
+  // create user cart
+
+  createUserCart = async (userId: number | string): Promise<boolean> => {
+    try {
+      const response = await fetch(`${STRAPI_ENDPOINT}/carts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: this.username,
-          email: this.email,
-          password: this.password,
-          first_name: this.firstName,
-          last_name: this.lastName,
+          data: {
+            cart_items: [],
+            user: `${userId}`,
+          },
         }),
-      }
-    )
-      .then((res) => res.json())
-      .then(async (data) => {
-        if (data.jwt) {
-          await createSession(data.jwt);
-          await this.createUserCart(data.user.id);
-          await this.createUserWishlist(data.user.id);
-          runInAction(() => {
-            this.isLoading = false;
-          });
-          return;
-        }
-        //  this.products = data.data;
-        //  this.pagination = data.meta.pagination;
-
-        if (data.error) {
-          runInAction(() => {
-            this.isLoading = false;
-            this.errorMessage = data.error.message;
-          });
-        }
-
-        runInAction(() => {
-          this.isLoading = false;
-        });
-      })
-      .catch((err) => {
-
-        runInAction(() => {
-          this.isLoading = false;
-        });
       });
-  };
 
-  // create user cart
+      if (!response.ok) {
+        const body = await response.json();
+        if (body?.error?.message) {
+          runInAction(() => {
+            this.errorMessage = body.error.message;
+          });
+        }
+        return false;
+      }
 
-  createUserCart = async (userId: number | string) => {
-    await fetch(`${STRAPI_ENDPOINT}/carts`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: {
-          cart_items: [],
-          user: `${userId}`,
-        },
-      }),
-    });
+      return true;
+    } catch (err) {
+      return false;
+    }
   };
 
   // create user wishlist
 
-  createUserWishlist = async (userId: number | string) => {
-    await fetch(`${STRAPI_ENDPOINT}/wishlists`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        data: {
-          wishlist_items: [],
-          user: `${userId}`,
+  createUserWishlist = async (userId: number | string): Promise<boolean> => {
+    try {
+      const response = await fetch(`${STRAPI_ENDPOINT}/wishlists`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    });
+        body: JSON.stringify({
+          data: {
+            wishlist_items: [],
+            user: `${userId}`,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        const body = await response.json();
+        if (body?.error?.message) {
+          runInAction(() => {
+            this.errorMessage = body.error.message;
+          });
+        }
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      return false;
+    }
   };
 
   // set class states function for external actions
