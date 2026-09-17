@@ -10,7 +10,7 @@ import { FaCheckCircle, FaTimesCircle, FaClock } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 const PaymentCallbackPage = () => {
-  const { payment, cart, user, userOrders } = useContext(StoreContext);
+  const { payment, cart, user } = useContext(StoreContext);
   const router = useRouter();
   const searchParams = useSearchParams();
   const locale = useLocale();
@@ -29,46 +29,30 @@ const PaymentCallbackPage = () => {
         if (result.success) {
           setPaymentStatus("success");
 
-          // Create order server-side (user, prices and totals are
-          // resolved from the JWT and the database — not the browser).
-          // The address is resolved by id from the server-stored record.
-          let addressId: number | string | null = null;
-          try {
-            const raw =
-              localStorage.getItem("shippingAddressId") || "{}";
-            addressId = JSON.parse(raw).addressId || null;
-          } catch (err) {
-            addressId = null;
-          }
+          // The order was already created server-side by the card checkout
+          // (paymentMethod "card"); the Paymob webhook flips it to paid. On
+          // the redirect callback we only resolve the order id and
+          // re-verify its status — never create a duplicate order.
+          const orderId =
+            payment.createdOrderId ??
+            searchParams.get("order") ??
+            searchParams.get("merchant_order_id");
 
-          if (!addressId) {
-            throw new Error("Shipping address reference is missing");
-          }
+          await user.clearUserCart(cart.userCartItems);
+          localStorage.removeItem("shippingAddressId");
 
-          const orderData = await userOrders.checkout({
-            items: cart.userCartItems.map((item) => ({
-              id: item.id,
-              quantity: item.quantity,
-            })),
-            orderNotes: `Paid via Paymob - Transaction ID: ${result.transactionId}.`,
-            addressId,
-          });
+          setOrderCreated(true);
 
-          if (orderData) {
-            await user.clearUserCart(cart.userCartItems);
+          toast.success(locale === "ar" ? "تم الدفع بنجاح" : "Payment successful");
 
-            setOrderCreated(true);
-            localStorage.removeItem("shippingAddressId");
-
-            toast.success(locale === "ar" ? "تم الدفع بنجاح" : "Payment successful");
-
-            // Redirect to confirmation page after 3 seconds
-            setTimeout(() => {
-              router.push(`/cart/confirmation?order_number=${orderData.data.id}`);
-            }, 3000);
-          } else {
-            throw new Error("Failed to create order");
-          }
+          // Redirect to confirmation page after 3 seconds
+          setTimeout(() => {
+            if (orderId) {
+              router.push(`/cart/confirmation?order_number=${orderId}`);
+            } else {
+              router.push("/profile/orders");
+            }
+          }, 3000);
         } else if (result.message?.includes("pending")) {
           setPaymentStatus("pending");
         } else {
@@ -85,7 +69,7 @@ const PaymentCallbackPage = () => {
     };
 
     processPaymentCallback();
-  }, [searchParams, payment, cart, user, userOrders, locale, router]);
+  }, [searchParams, payment, cart, user, locale, router]);
 
   const handleRetryPayment = () => {
     router.push("/cart/payment");

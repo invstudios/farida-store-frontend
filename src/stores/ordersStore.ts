@@ -102,11 +102,14 @@ export class OrdersStore {
   // recomputes prices and totals from the database and writes the order
   // with its items atomically. The client only sends product ids and
   // quantities plus a reference to a server-stored address — never
-  // totalPrice, userId or personal shipping data.
+  // totalPrice, userId or personal shipping data. A server-created Paymob
+  // order/payment key comes back for paymentMethod "card".
   checkout = async (data: {
     items: Array<{ id: number | string; quantity: number }>;
     addressId: number | string;
     orderNotes: string;
+    paymentMethod?: "card" | "cod";
+    idempotencyKey?: string;
   }) => {
     let response = await fetch(`${STRAPI_ENDPOINT}/order-details/checkout`, {
       method: "POST",

@@ -10,7 +10,6 @@ import { MdPayment } from "react-icons/md";
 import { toast } from "react-toastify";
 import PaymentIframe from "./components/PaymentIframe";
 import PaymentSummary from "./components/PaymentSummary";
-import { generateOrderId } from "@/utils/paymentValidation";
 
 const PaymentPage = () => {
   const { cart, user, userOrders, userAddresses, payment } =
@@ -53,7 +52,10 @@ const PaymentPage = () => {
     payment.resetPaymentState();
   };
 
-  // Process card payment
+  // Process card payment: the order + Paymob payment key are both created
+  // server-side (POST /order-details/checkout with paymentMethod "card").
+  // The returned payment key is rendered in Paymob's hosted iframe — no
+  // Paymob secret, cart total or personal data is sent from the browser.
   const processCardPayment = async () => {
     if (!user.strapiUserdata.id) {
       toast.error(
@@ -73,40 +75,24 @@ const PaymentPage = () => {
     }
 
     setIsProcessingOrder(true);
+    payment.resetPaymentState();
 
     try {
-      // Prepare payment data. Address fields come from the server-stored
-      // record resolved by id — never from browser storage.
-      const paymentData = {
-        amount: cart.totalPrice,
-        orderId: generateOrderId("FARIDA"),
-        customerData: {
-          first_name: user.strapiUserdata.first_name,
-          last_name: user.strapiUserdata.last_name,
-          email: user.strapiUserdata.email,
-          phone: shippingData.phone || user.strapiUserdata.username,
-          phone_number: shippingData.phone || user.strapiUserdata.username,
-          street: shippingData.street,
-          city: shippingData.city,
-          state: shippingData.state,
-          country: shippingData.country,
-          postal_code: shippingData.postal_code,
-        },
+      const idempotencyKey = `${user.strapiUserdata.id}_${Date.now()}`;
+
+      const orderData = await userOrders.checkout({
         items: cart.userCartItems.map((item) => ({
-          name: item.title,
-          description: item.description || item.title,
-          amount_cents: Math.round(item.price * 100),
+          id: item.id,
           quantity: item.quantity,
         })),
-      };
+        orderNotes: "Online payment via Paymob",
+        addressId: shippingData.id,
+        paymentMethod: "card",
+        idempotencyKey,
+      });
 
-      // Initiate payment
-      const paymentKey = await payment.initiatePayment(paymentData);
-
-      if (paymentKey) {
-        // Payment iframe will be shown
-        console.log("Payment initiated successfully");
-        // function to save the data when user use credit card .
+      if (orderData && orderData.payment) {
+        payment.setServerPayment(orderData);
       } else {
         throw new Error("Failed to initiate payment");
       }
@@ -181,38 +167,28 @@ const PaymentPage = () => {
     }
   };
 
-  // Handle payment completion
+  // Handle payment completion. The order was already created server-side
+  // when the card flow started (paymentMethod "card"), and the Paymob
+  // webhook marks it paid. Here we only clear the cart and redirect.
   const handlePaymentSuccess = async (
-    transactionId: string,
-    paymobOrderId: string
+    transactionId?: string,
+    paymobOrderId?: string
   ) => {
     try {
-      const shippingData = await getShippingAddress();
-      if (!shippingData) return;
+      const orderId =
+        payment.createdOrderId ?? payment.createdPaymobOrderId ?? "";
 
-      // Create order in your system (server-owned checkout)
-      const orderData = await userOrders.checkout({
-        items: cart.userCartItems.map((item) => ({
-          id: item.id,
-          quantity: item.quantity,
-        })),
-        orderNotes: `Paid via Paymob - Transaction ID: ${transactionId}. Paymob Order ID: ${paymobOrderId}`,
-        addressId: shippingData.id,
-      });
+      await user.clearUserCart(cart.userCartItems);
 
-      if (orderData) {
-        await user.clearUserCart(cart.userCartItems);
+      // Clear the non-sensitive address reference
+      localStorage.removeItem("shippingAddressId");
 
-        // Clear the non-sensitive address reference
-        localStorage.removeItem("shippingAddressId");
-
-        toast.success(
-          locale === "ar" ? "تم الدفع بنجاح" : "Payment successful"
-        );
-        router.push(
-          `/cart/confirmation?order_number=${orderData?.data?.id}`
-        );
-      }
+      toast.success(
+        locale === "ar" ? "تم الدفع بنجاح" : "Payment successful"
+      );
+      router.push(
+        `/cart/confirmation?order_number=${orderId}`
+      );
     } catch (error) {
       console.error("Order creation after payment error:", error);
       toast.error(
