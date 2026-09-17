@@ -45,11 +45,11 @@ const RegisterForm = () => {
   ]);
 
   useEffect(() => {
-    if (isUserLoggedIn()) {
+    if (isUserLoggedIn() && !registerForm.errorMessage) {
       router.push("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [registerForm.isLoading]);
+  }, [registerForm.isLoading, registerForm.errorMessage]);
 
   return (
     <div
