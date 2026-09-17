@@ -1,38 +1,28 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import PaymobService from '@/services/paymobService';
 import {
-  validatePaymentData,
   validatePaymobCallback,
-  validateShippingData,
-  formatPaymentAmount,
-  generateOrderId,
-  maskSensitiveData,
-  validatePaymentConfig
+  maskSensitiveData
 } from '@/utils/paymentValidation';
 
-export interface PaymentData {
-  amount: number;
-  orderId: string;
-  customerData: {
-    first_name: string;
-    last_name: string;
-    email: string;
-    phone: string;
-    street: string;
-    building?: string;
-    floor?: string;
-    apartment?: string;
-    city: string;
-    state: string;
-    country: string;
-    postal_code: string;
-  };
-  items: Array<{
-    name: string;
-    description: string;
-    amount_cents: number;
-    quantity: number;
-  }>;
+export interface OrderData {
+  id: number | string;
+  total?: number | string | null;
+  payment_method?: string;
+  payment_status?: string;
+  createdAt?: string;
+  [key: string]: unknown;
+}
+
+export interface ServerPaymentResult {
+  order: OrderData;
+  payment: {
+    paymentKey: string;
+    paymobOrderId: number | string;
+    amountCents: number;
+    currency: string;
+  } | null;
+  alreadyExists?: boolean;
 }
 
 export interface PaymentResult {
@@ -51,6 +41,8 @@ class PaymentStore {
   // Payment data
   currentPaymentKey: string | null = null;
   currentIframeUrl: string | null = null;
+  createdOrderId: number | string | null = null;
+  createdPaymobOrderId: number | string | null = null;
   paymentResult: PaymentResult | null = null;
   
   // Error handling
@@ -72,76 +64,33 @@ class PaymentStore {
       this.isProcessingPayment = false;
       this.currentPaymentKey = null;
       this.currentIframeUrl = null;
+      this.createdOrderId = null;
+      this.createdPaymobOrderId = null;
       this.paymentResult = null;
       this.paymentError = null;
     });
   };
 
-  // Initiate payment process
-  initiatePayment = async (paymentData: PaymentData): Promise<string | null> => {
+  // The Paymob order and payment key are created server-side (POST
+  // /order-details/checkout with paymentMethod "card"). This store only
+  // renders the returned payment key in Paymob's hosted iframe — no Paymob
+  // secret ever reaches the browser (#179, #180).
+  setServerPayment = (result: ServerPaymentResult): string | null => {
+    const paymentKey = result?.payment?.paymentKey;
     runInAction(() => {
-      this.isInitiatingPayment = true;
-      this.paymentError = null;
+      this.createdOrderId = result?.order?.id ?? null;
+      this.createdPaymobOrderId = result?.payment?.paymobOrderId ?? null;
+      if (!paymentKey) {
+        this.paymentError = 'Payment could not be initiated';
+        return;
+      }
+      this.currentPaymentKey = paymentKey;
+      this.currentIframeUrl = this.paymobService.getIframeUrl({
+        paymentKey,
+      });
+      this.isInitiatingPayment = false;
     });
-
-    try {
-      // Validate payment configuration
-      const configValidation = validatePaymentConfig();
-      if (!configValidation.isValid) {
-        throw new Error(`Configuration error: ${configValidation.errors.join(', ')}`);
-      }
-
-      // Validate payment data
-      const validation = validatePaymentData({
-        amount: paymentData.amount,
-        currency: 'EGP',
-        orderId: paymentData.orderId,
-        customerEmail: paymentData.customerData.email,
-        customerPhone: paymentData.customerData.phone
-      });
-
-      if (!validation.isValid) {
-        throw new Error(`Validation error: ${validation.errors.join(', ')}`);
-      }
-
-      // Log warnings if any
-      if (validation.warnings.length > 0) {
-        console.warn('Payment validation warnings:', validation.warnings);
-      }
-
-      // Validate shipping data
-      const shippingValidation = validateShippingData(paymentData.customerData);
-      if (!shippingValidation.isValid) {
-        throw new Error(`Shipping data error: ${shippingValidation.errors.join(', ')}`);
-      }
-
-      // Format amount to ensure it's valid
-      const formattedPaymentData = {
-        ...paymentData,
-        amount: formatPaymentAmount(paymentData.amount)
-      };
-
-      // Log masked data for debugging
-      console.log('Initiating payment with data:', maskSensitiveData(formattedPaymentData));
-
-      const paymentKey = await this.paymobService.initiatePayment(formattedPaymentData);
-      const iframeUrl = this.paymobService.getIframeUrl(paymentKey);
-
-      runInAction(() => {
-        this.currentPaymentKey = paymentKey;
-        this.currentIframeUrl = iframeUrl;
-        this.isInitiatingPayment = false;
-      });
-
-      return paymentKey;
-    } catch (error) {
-      console.error('Payment initiation error:', error);
-      runInAction(() => {
-        this.paymentError = error instanceof Error ? error.message : 'Payment initiation failed';
-        this.isInitiatingPayment = false;
-      });
-      return null;
-    }
+    return paymentKey || null;
   };
 
   // Handle payment callback
@@ -232,14 +181,18 @@ class PaymentStore {
     }
   };
 
-  // Verify payment status (optional - for additional security)
-  verifyPayment = async (transactionId: string): Promise<boolean> => {
+  // Verify payment status server-side. Authority lives with the backend
+  // (the Paymob webhook validates the transaction and flips the order to
+  // paid), so anything else — trusting a callback URL or a bare transaction
+  // id — is refused (#180).
+  verifyPayment = async (orderId: number | string): Promise<boolean> => {
     try {
-      // This would typically call your backend to verify the payment
-      // For now, we'll just return true if we have a transaction ID
-      return !!transactionId;
+      const response = await fetch(`/api/strapi/order-details/${orderId}`);
+      if (!response.ok) return false;
+      const data = await response.json();
+      return data?.data?.attributes?.payment_status === "paid";
     } catch (error) {
-      console.error('Payment verification error:', error);
+      console.error("Payment verification error:", error);
       return false;
     }
   };

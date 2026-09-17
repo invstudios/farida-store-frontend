@@ -226,20 +226,17 @@ export function maskSensitiveData(data: any): any {
 
 /**
  * Validate environment configuration
+ *
+ * The Paymob API token and integration id are server-only secrets and must
+ * never use the NEXT_PUBLIC_ prefix (#179, #180). The partial iframe id is
+ * the only value needed in the browser (it only identifies the hosted
+ * payment page that Paymob renders, alongside the server-issued payment key).
  */
 export function validatePaymentConfig(): PaymentValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
 
   // Check required environment variables
-  if (!process.env.NEXT_PUBLIC_PAYMOB_API_TOKEN) {
-    errors.push("NEXT_PUBLIC_PAYMOB_API_TOKEN is not configured");
-  }
-
-  if (!process.env.NEXT_PUBLIC_PAYMOB_INTEGRATION_ID) {
-    errors.push("NEXT_PUBLIC_PAYMOB_INTEGRATION_ID is not configured");
-  }
-
   if (!process.env.NEXT_PUBLIC_PAYMOB_IFRAME_ID) {
     errors.push("NEXT_PUBLIC_PAYMOB_IFRAME_ID is not configured");
   }
@@ -249,10 +246,12 @@ export function validatePaymentConfig(): PaymentValidationResult {
     warnings.push("Running in development mode - use test credentials only");
   }
 
-  // Check API token format (basic validation)
-  const apiToken = process.env.NEXT_PUBLIC_PAYMOB_API_TOKEN;
-  if (apiToken && apiToken.length < 20) {
-    warnings.push("API token seems too short - please verify");
+  if (process.env.NEXT_PUBLIC_PAYMOB_API_TOKEN) {
+    warnings.push("NEXT_PUBLIC_PAYMOB_API_TOKEN is exposed in the browser — move it to a server-only variable");
+  }
+
+  if (process.env.NEXT_PUBLIC_PAYMOB_INTEGRATION_ID) {
+    warnings.push("NEXT_PUBLIC_PAYMOB_INTEGRATION_ID is exposed in the browser — move it to a server-only variable");
   }
 
   return {
