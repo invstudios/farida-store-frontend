@@ -10,12 +10,31 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_PER_WINDOW = 5;
+const MAX_TRACKED_IPS = 100_000;
 const ipHits = new Map<string, { start: number; count: number }>();
+let lastSweep = Date.now();
+
+function sweepExpired() {
+  const now = Date.now();
+  ipHits.forEach((bucket, ip) => {
+    if (bucket.start < now - WINDOW_MS) {
+      ipHits.delete(ip);
+    }
+  });
+}
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
+  if (now - lastSweep >= WINDOW_MS) {
+    sweepExpired();
+    lastSweep = now;
+  }
+
   const bucket = ipHits.get(ip);
   if (!bucket || bucket.start < now - WINDOW_MS) {
+    if (ipHits.size >= MAX_TRACKED_IPS) {
+      return true;
+    }
     ipHits.set(ip, { start: now, count: 1 });
     return false;
   }
@@ -31,11 +50,12 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const ip =
+  const clientIp =
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    req.headers.get("x-real-ip")?.trim() ||
     "unknown";
 
-  if (isRateLimited(ip)) {
+  if (isRateLimited(clientIp)) {
     return NextResponse.json(
       { error: "Too many attempts, please try again later" },
       { status: 429 }
@@ -85,6 +105,13 @@ export async function POST(req: NextRequest) {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        // Forward the real client IP so the Strapi-side limiter keys per
+        // visitor instead of collapsing every submission onto the single
+        // Next.js host IP. On deployment platforms / CDNs the incoming
+        // X-Forwarded-For is set by the trusted edge, so the first value is
+        // the actual visitor address.
+        "X-Forwarded-For": clientIp,
+        "X-Real-IP": clientIp,
       },
       body: JSON.stringify({ data: { name, email, message } }),
       cache: "no-store",
